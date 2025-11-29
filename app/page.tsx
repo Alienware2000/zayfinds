@@ -5,16 +5,19 @@
  * Introduces users to the site and showcases featured categories.
  *
  * Features:
- * - Hero STICKY on left side while scroll columns animate on right (finds.org style)
+ * - Hero + Scroll columns side-by-side on desktop
+ * - Both scroll naturally with the page
+ * - Cards inside columns animate automatically (infinite scroll effect)
  * - Featured categories horizontal scroll
  * - CTA button linking to /products
  *
  * Layout (Desktop):
  * ┌──────────────────────────────────────────────────────┐
- * │ Hero (sticky left)  │  Scroll Columns (right)        │
- * │ - Stays in place    │  [Col1↑] [Col2↓] [Col3↑]      │
- * │ - Headline          │  Cards scroll continuously     │
- * │ - CTA Button        │                                │
+ * │ Hero (left ~40%)    │  Scroll Columns (right ~60%)   │
+ * │ - Headline          │  [Col1↑] [Col2↓] [Col3↑]      │
+ * │ - CTA Button        │  Cards animate continuously    │
+ * │                     │                                │
+ * │ (Both scroll with the page together)                 │
  * └──────────────────────────────────────────────────────┘
  *
  * Route: /
@@ -55,28 +58,24 @@ export default function LandingPage() {
       */}
       <main className="min-h-screen">
         {/* ===========================================
-            HERO + SCROLL SECTION (finds.org style)
-            Hero stays sticky on left, columns scroll on right
+            HERO + SCROLL SECTION
+            Both scroll together with the page
             =========================================== */}
-        <section className="relative w-full min-h-[calc(100vh-64px)] lg:min-h-[700px] max-w-7xl mx-auto">
+        <section className="w-full max-w-7xl mx-auto px-4">
           {/* 
-            Desktop layout: Side-by-side with sticky Hero
+            Desktop layout: Side-by-side, both scroll with page
           */}
-          <div className="hidden lg:flex h-[700px]">
+          <div className="hidden lg:flex min-h-[600px] py-12 gap-8">
             {/* 
-              LEFT SIDE: Hero content (STICKY)
-              - Fixed position relative to this section
+              LEFT SIDE: Hero content
               - Takes ~40% width
               - Vertically centered content
+              - Scrolls with the page (NOT sticky)
             */}
             <div
               className="
                 w-[40%]
-                sticky top-20
-                h-fit
                 flex flex-col justify-center
-                py-16
-                px-4
               "
             >
               <Hero />
@@ -86,8 +85,10 @@ export default function LandingPage() {
               RIGHT SIDE: Vertical scroll columns
               - Takes ~60% width
               - Contains the 3 animated columns
+              - Cards animate automatically
+              - Scrolls with the page
             */}
-            <div className="w-[60%] h-full overflow-hidden">
+            <div className="w-[60%] h-[600px] overflow-hidden">
               <VerticalScrollSection products={trendingProducts} />
             </div>
           </div>
@@ -95,7 +96,7 @@ export default function LandingPage() {
           {/* 
             Mobile layout: Stacked vertically
           */}
-          <div className="lg:hidden px-4 py-12">
+          <div className="lg:hidden py-12">
             <Hero />
             <div className="mt-8">
               <VerticalScrollSection products={trendingProducts} />
