@@ -1,16 +1,17 @@
 "use client";
 
 /**
- * CategoryFilter Component
+ * CategoryFilter Component (FINDS-style Tab Bar)
  *
- * A horizontal scrollable row of filter chips for selecting product categories.
- * Used on the homepage to filter the product grid by category.
+ * A full-width tab bar for selecting product categories.
+ * Redesigned to match FINDS' rectangular tab style.
  *
  * Design notes:
- * - Client component because it handles user interaction (click events)
- * - Horizontally scrollable on mobile for overflow categories
- * - Pill-shaped chips with distinct active/inactive states
- * - "All" option shows all products (no filtering)
+ * - Full-width stripe layout
+ * - Rectangular tabs (not pill-shaped)
+ * - Active tab: filled background, bold text
+ * - Inactive tab: darker background, subtle border
+ * - Horizontally scrollable on mobile
  */
 
 import { Category } from "@/types/product";
@@ -33,35 +34,35 @@ interface CategoryFilterProps {
 }
 
 /**
- * All available filter options in display order.
- * "all" comes first, followed by categories roughly grouped by type.
+ * Tab configuration with value and display label.
  */
-const FILTER_OPTIONS: CategoryFilterValue[] = [
-  "all",
-  "tops",
-  "hoodies",
-  "jackets",
-  "pants",
-  "shorts",
-  "shoes",
-  "bags",
-  "jewelry",
-  "accessories",
-  "electronics",
-  "misc",
-];
-
-/**
- * Capitalizes the first letter of a string for display.
- * Example: "hoodies" -> "Hoodies", "all" -> "All"
- */
-function capitalize(str: string): string {
-  return str.charAt(0).toUpperCase() + str.slice(1);
+interface TabConfig {
+  value: CategoryFilterValue;
+  label: string;
 }
 
 /**
- * CategoryFilter renders a row of clickable filter chips.
- * The active chip is highlighted; clicking a chip calls onChange.
+ * All available filter tabs in display order.
+ * Labels are uppercase for FINDS-style appearance.
+ */
+const TABS: TabConfig[] = [
+  { value: "all", label: "ALL" },
+  { value: "shoes", label: "SHOES" },
+  { value: "tops", label: "T-SHIRTS" },
+  { value: "hoodies", label: "HOODIES" },
+  { value: "jackets", label: "JACKETS" },
+  { value: "pants", label: "PANTS" },
+  { value: "jewelry", label: "JEWELRY" },
+  { value: "bags", label: "BAGS" },
+  { value: "shorts", label: "SHORTS" },
+  { value: "accessories", label: "ACCESSORIES" },
+  { value: "electronics", label: "ELECTRONICS" },
+  { value: "misc", label: "MISC" },
+];
+
+/**
+ * CategoryFilter renders a full-width tab bar.
+ * Clicking a tab updates the category filter state.
  */
 export default function CategoryFilter({
   value,
@@ -72,45 +73,43 @@ export default function CategoryFilter({
       id="categories"
       className="
         w-full
-        py-4
+        bg-neutral-950
+        border-y border-white/10
         overflow-x-auto
         scrollbar-hide
       "
     >
       {/* 
-        Inner flex container for chips.
-        - flex-nowrap prevents wrapping so horizontal scroll works
-        - gap-2 for consistent spacing between chips
-        - px-4 for edge padding (matches page container)
+        Inner flex container for tabs.
+        - flex-nowrap prevents wrapping
+        - min-w-max ensures tabs don't compress
       */}
-      <div className="flex flex-nowrap gap-2 px-4 md:px-0">
-        {FILTER_OPTIONS.map((option) => {
-          /* Determine if this chip is the currently active one */
-          const isActive = value === option;
+      <div className="flex min-w-max">
+        {TABS.map((tab) => {
+          const isActive = value === tab.value;
 
           return (
             <button
-              key={option}
-              onClick={() => onChange(option)}
+              key={tab.value}
+              onClick={() => onChange(tab.value)}
               className={`
-                flex-shrink-0
-                px-4 py-2
-                rounded-full
-                text-sm font-medium
-                border
+                px-6 py-4
+                text-sm font-semibold
+                tracking-wider
+                border-r border-white/10
                 transition-all duration-200
                 cursor-pointer
+                whitespace-nowrap
                 ${
                   isActive
-                    ? /* Active state: white bg, black text, white border */
-                      "bg-white text-black border-white"
-                    : /* Inactive state: transparent bg, muted text/border, hover effect */
-                      "bg-transparent text-neutral-300 border-white/20 hover:border-white/40"
+                    ? /* Active state: lighter background, white text */
+                      "bg-neutral-800 text-white"
+                    : /* Inactive state: dark background, muted text */
+                      "bg-neutral-950 text-neutral-400 hover:bg-neutral-900 hover:text-neutral-200"
                 }
               `}
             >
-              {/* Display capitalized label */}
-              {capitalize(option)}
+              {tab.label}
             </button>
           );
         })}
@@ -118,4 +117,3 @@ export default function CategoryFilter({
     </div>
   );
 }
-
