@@ -72,43 +72,67 @@ export default function VerticalScrollSection({ products }: VerticalScrollSectio
       {/* ===========================================
           DESKTOP LAYOUT (lg and above)
           3 animated vertical columns - fills parent height
+          Includes subtle gradient fade at top and bottom edges
           =========================================== */}
-      <div
-        className="
-          hidden lg:grid
-          lg:grid-cols-3
-          gap-3
-          h-full
-          overflow-hidden
-          p-2
-        "
-      >
+      <div className="hidden lg:block relative h-full">
         {/* 
-          Left column: Scrolls upward at normal speed.
+          TOP EDGE: No gradient - cards visible from the top.
+          Only bottom has fade effect for cleaner look.
         */}
-        <VerticalScrollColumn
-          products={leftProducts}
-          direction="up"
-          speed="normal"
+
+        {/* 
+          BOTTOM EDGE GRADIENT: Subtle fade from transparent to black.
+          Creates smooth visual boundary at bottom.
+        */}
+        <div
+          className="
+            absolute bottom-0 left-0 right-0
+            h-16 lg:h-24
+            bg-gradient-to-t from-black/80 via-black/40 to-transparent
+            z-10
+            pointer-events-none
+          "
         />
 
         {/* 
-          Center column: Scrolls downward.
+          Grid container for the 3 columns.
         */}
-        <VerticalScrollColumn
-          products={centerProducts}
-          direction="down"
-          speed="normal"
-        />
+        <div
+          className="
+            grid grid-cols-3
+            gap-3
+            h-full
+            overflow-hidden
+            p-2
+          "
+        >
+          {/* 
+            Left column: Scrolls upward at normal speed.
+          */}
+          <VerticalScrollColumn
+            products={leftProducts}
+            direction="up"
+            speed="normal"
+          />
 
-        {/* 
-          Right column: Scrolls upward at slower speed.
-        */}
-        <VerticalScrollColumn
-          products={rightProducts}
-          direction="up"
-          speed="slow"
-        />
+          {/* 
+            Center column: Scrolls downward.
+          */}
+          <VerticalScrollColumn
+            products={centerProducts}
+            direction="down"
+            speed="normal"
+          />
+
+          {/* 
+            Right column: Scrolls upward at slower speed.
+          */}
+          <VerticalScrollColumn
+            products={rightProducts}
+            direction="up"
+            speed="slow"
+          />
+        </div>
       </div>
 
       {/* ===========================================
