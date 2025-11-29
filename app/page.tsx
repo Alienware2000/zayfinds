@@ -1,7 +1,144 @@
+"use client";
+
+/**
+ * HomePage Component
+ *
+ * The main landing page for zayfinds.
+ * Displays the navbar, hero section, category filters, and product grid.
+ *
+ * Features:
+ * - Client component for managing filter state
+ * - Category filtering with memoized product list
+ * - Responsive layout with max-width container
+ * - Anchor link targets for navbar navigation (#categories, #products)
+ */
+
+import { useState, useMemo } from "react";
+
+/* Component imports */
+import Navbar from "@/components/Navbar";
+import Hero from "@/components/Hero";
+import CategoryFilter, {
+  CategoryFilterValue,
+} from "@/components/CategoryFilter";
+import ProductGrid from "@/components/ProductGrid";
+
+/* Data imports */
+import { mockProducts } from "@/data/productsMock";
+
+/* Type imports */
+import { Category } from "@/types/product";
+
+/**
+ * All available product categories.
+ * Used for validation and potential future features (e.g., showing category counts).
+ */
+const allCategories: Category[] = [
+  "tops",
+  "hoodies",
+  "jackets",
+  "pants",
+  "shorts",
+  "shoes",
+  "bags",
+  "jewelry",
+  "accessories",
+  "electronics",
+  "misc",
+];
+
+/**
+ * HomePage is the main entry point for the zayfinds application.
+ * It manages category filter state and renders the complete page layout.
+ */
 export default function HomePage() {
+  /**
+   * State: Currently selected category filter.
+   * - "all" shows all products (default)
+   * - Any Category value filters to that specific category
+   */
+  const [selected, setSelected] = useState<CategoryFilterValue>("all");
+
+  /**
+   * Memoized filtered products list.
+   * Recomputes only when `selected` changes, avoiding unnecessary re-renders.
+   * - If "all" is selected, return the full product list
+   * - Otherwise, filter products by the selected category
+   */
+  const filteredProducts = useMemo(() => {
+    if (selected === "all") {
+      return mockProducts;
+    }
+    return mockProducts.filter((product) => product.category === selected);
+  }, [selected]);
+
   return (
-    <main className="min-h-screen flex items-center justify-center">
-      <p className="text-white/60">zayfinds MVP coming soon</p>
-    </main>
+    <>
+      {/* 
+        Navbar: Sticky header with logo and navigation links.
+        Rendered outside <main> so it spans full width.
+      */}
+      <Navbar />
+
+      {/* 
+        Main content area: Centered container with max-width.
+        - max-w-6xl: constrains content width on large screens
+        - mx-auto: horizontally centers the container
+        - px-4: horizontal padding for mobile
+        - pb-16: bottom padding for breathing room
+        - pt-8: top padding below navbar
+      */}
+      <main className="max-w-6xl mx-auto px-4 pb-16 pt-8">
+        {/* 
+          Hero section: Main headline and call-to-action.
+          Introduces users to zayfinds.
+        */}
+        <Hero />
+
+        {/* 
+          Category filter: Horizontal scrollable filter chips.
+          - value: current selection state
+          - onChange: updates selection state
+          - Contains id="categories" for anchor link navigation
+        */}
+        <CategoryFilter value={selected} onChange={setSelected} />
+
+        {/* 
+          Products section: Grid of product cards.
+          - id="products" for anchor link navigation from navbar/hero
+          - Section label for visual hierarchy
+          - Conditional rendering based on filtered results
+        */}
+        <section id="products" className="mt-8">
+          {/* 
+            Section label: Small uppercase text above the grid.
+            Provides context for the content below.
+          */}
+          <h2
+            className="
+              text-xs font-medium
+              tracking-widest uppercase
+              text-neutral-400
+              mb-4
+            "
+          >
+            Products
+          </h2>
+
+          {/* 
+            Product grid or empty state.
+            - If no products match the filter, show a muted message
+            - Otherwise, render the ProductGrid component
+          */}
+          {filteredProducts.length === 0 ? (
+            <p className="text-neutral-500 text-sm py-8">
+              No products in this category yet.
+            </p>
+          ) : (
+            <ProductGrid products={filteredProducts} />
+          )}
+        </section>
+      </main>
+    </>
   );
 }
