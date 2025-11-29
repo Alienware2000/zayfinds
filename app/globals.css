@@ -20,10 +20,13 @@
   --color-text: #ffffff;
   --color-text-muted: #a1a1a1;
 
-  /* Vertical scroll animation variables */
-  --scroll-duration: 30s;
-  --scroll-duration-slow: 40s;
-  --scroll-duration-fast: 25s;
+  /* Vertical scroll animation variables (higher = slower) */
+  --scroll-duration: 90s;
+  --scroll-duration-slow: 120s;
+  --scroll-duration-fast: 75s;
+
+  /* Horizontal scroll animation duration (category carousel) - slower for smooth feel */
+  --scroll-horizontal-duration: 70s;
 }
 
 /* ===========================================
@@ -170,3 +173,25 @@ body {
  * Note: Animation continues on hover (no pause).
  * Individual cards have their own hover highlight effects.
  */
+
+/**
+ * Horizontal Scroll Animation
+ * Used for the category carousel on the homepage.
+ * 
+ * Moves content leftward by 50% (half the duplicated list)
+ * for seamless infinite looping.
+ */
+
+@keyframes scrollHorizontal {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Horizontal scroll animation class */
+.animate-scroll-horizontal {
+  animation: scrollHorizontal var(--scroll-horizontal-duration) linear infinite;
+}

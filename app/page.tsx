@@ -29,7 +29,7 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import VerticalScrollSection from "@/components/VerticalScrollSection";
-import FeaturedCategories from "@/components/FeaturedCategories";
+import CategoryCarousel from "@/components/CategoryCarousel";
 
 /* Data imports */
 import { mockProducts } from "@/data/productsMock";
@@ -105,19 +105,23 @@ export default function LandingPage() {
         </section>
 
         {/* ===========================================
-            FEATURED CATEGORIES SECTION
+            CATEGORY CAROUSEL SECTION
+            Full-width for edge-to-edge carousel effect
             =========================================== */}
-        <section className="max-w-6xl mx-auto px-4 py-16">
+        <section className="w-full mt-8 md:mt-16">
           {/* 
             Divider: Visual separation before categories.
+            Constrained to max-w-6xl for consistency.
           */}
-          <div className="w-full h-px bg-white/5 mb-12" />
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="w-full h-px bg-white/5 mb-8" />
+          </div>
 
           {/* 
-            Featured categories: Horizontal scrollable category cards.
-            Allows users to quickly jump to a category they're interested in.
+            Category carousel: Full-width horizontal auto-scroll.
+            Edge-to-edge with gradient fade at boundaries.
           */}
-          <FeaturedCategories />
+          <CategoryCarousel />
         </section>
 
         {/* ===========================================
