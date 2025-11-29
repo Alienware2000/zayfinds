@@ -7,20 +7,29 @@
  * Design notes:
  * - Full-width section with generous vertical padding
  * - Mobile: stacked vertically, left-aligned text
- * - Desktop: same layout, just larger typography
- * - Primary CTA button links to the products section
+ * - Desktop: same layout, larger typography
+ * - Subtle fade-in animation on load
+ * - Strong CTA button with hover glow effect
+ *
+ * Phase 5-A Polish:
+ * - Increased vertical spacing
+ * - Larger headline with extra-bold weight
+ * - Fade-in animation
+ * - Stronger, larger CTA button
  */
+
+import Link from "next/link";
 
 /**
  * Hero is a server component (no "use client" needed).
- * It displays static content with a simple anchor link.
+ * It displays static content with a Link to the products page.
  */
 export default function Hero() {
   return (
     <section
       className="
         w-full
-        py-10 md:py-12
+        py-16 md:py-24 lg:py-28
         px-4
       "
     >
@@ -28,8 +37,9 @@ export default function Hero() {
         Content container: Left-aligned on all screen sizes.
         - max-w-6xl matches the navbar container width
         - mx-auto centers the container
+        - animate-fadeIn for subtle entrance animation
       */}
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto animate-fadeIn">
         {/* 
           Small label above the heading.
           - Uppercase for stylistic emphasis
@@ -38,9 +48,9 @@ export default function Hero() {
         */}
         <span
           className="
-            text-xs font-medium
+            text-xs font-semibold
             tracking-widest uppercase
-            text-neutral-400
+            text-neutral-500
           "
         >
           Curated Rep Finds
@@ -48,18 +58,19 @@ export default function Hero() {
 
         {/* 
           Main headline: The core message of zayfinds.
-          - Large text that scales up on larger screens
-          - Bold weight for impact
+          - Extra-large text that scales up on larger screens
+          - Extra-bold weight for maximum impact
           - White text for contrast
-          - Top margin for spacing from label
+          - Tight leading for compact appearance
         */}
         <h1
           className="
-            mt-3
-            text-3xl sm:text-4xl md:text-5xl
-            font-bold
-            leading-tight
+            mt-4
+            text-4xl sm:text-5xl md:text-6xl lg:text-7xl
+            font-extrabold
+            leading-[1.1]
             text-white
+            tracking-tight
           "
         >
           We do not gate keep over here
@@ -69,42 +80,46 @@ export default function Hero() {
           Subtext: Explains what zayfinds is about.
           - Muted text (neutral-400) for hierarchy
           - Max width for readable line length
-          - Top margin for spacing from headline
+          - Slightly larger text on desktop
         */}
         <p
           className="
-            mt-4
-            text-base md:text-lg
+            mt-6
+            text-base md:text-lg lg:text-xl
             text-neutral-400
-            max-w-md
+            max-w-lg
+            leading-relaxed
           "
         >
           Browse hand-picked pieces and tap through to buy directly from sellers.
         </p>
 
         {/* 
-          Primary CTA button: Links to the products section.
-          - Rounded rectangle shape
-          - White border with white text (outline style)
-          - Hover: fills with white, text turns black
-          - Smooth transition for hover effect
+          Primary CTA button: Links to the products page.
+          - Larger padding for stronger presence
+          - Solid white background for high visibility
+          - Black text for contrast
+          - Rounded corners
+          - Hover: scale up slightly with subtle glow
+          - Smooth transition for all effects
         */}
-        <a
-          href="#products"
+        <Link
+          href="/products"
           className="
             inline-block
-            mt-6
-            px-6 py-3
-            text-sm font-medium
-            text-white
-            border border-white
-            rounded-md
-            hover:bg-white hover:text-black
-            transition-colors duration-200
+            mt-8
+            px-8 py-4
+            text-base font-semibold
+            text-black
+            bg-white
+            rounded-lg
+            transition-all duration-300
+            hover:scale-105
+            hover:shadow-[0_0_30px_rgba(255,255,255,0.3)]
           "
         >
           Browse products
-        </a>
+        </Link>
       </div>
     </section>
   );

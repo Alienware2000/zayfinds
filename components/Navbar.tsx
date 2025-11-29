@@ -9,11 +9,14 @@
  * - Semi-transparent black background with backdrop blur (glassy effect)
  * - Subtle bottom border for separation from content
  * - Max-width container for consistent alignment with page content
+ * - Uses Next.js Link for client-side navigation
  */
+
+import Link from "next/link";
 
 /**
  * Navbar is a server component (no "use client" needed).
- * Links are simple anchor tags pointing to section IDs on the page.
+ * Uses Next.js Link for proper client-side routing between pages.
  */
 export default function Navbar() {
   return (
@@ -41,24 +44,47 @@ export default function Navbar() {
         "
       >
         {/* 
-          Logo: "zayfinds" text
+          Logo: "zayfinds" text wrapped in Link to home.
+          - Clicking logo returns to landing page
           - Uppercase tracking (letter-spacing) for modern feel
           - Font semibold for weight without being too heavy
           - White text for contrast
         */}
-        <span className="text-sm font-semibold tracking-widest uppercase text-white">
+        <Link 
+          href="/"
+          className="text-sm font-semibold tracking-widest uppercase text-white hover:text-white/80 transition-colors duration-200"
+        >
           zayfinds
-        </span>
+        </Link>
 
         {/* 
-          Navigation links: Anchor links to page sections
+          Navigation links: Route links to pages
           - Flex row with gap for spacing
           - Muted text that brightens on hover
           - Smooth transition for hover effect
         */}
         <div className="flex items-center gap-6">
-          <a
-            href="#products"
+          {/* 
+            Home link: Routes back to landing page
+            Allows users to return to the main intro/marketing page
+          */}
+          <Link
+            href="/"
+            className="
+              text-sm text-white/60
+              hover:text-white
+              transition-colors duration-200
+            "
+          >
+            Home
+          </Link>
+
+          {/* 
+            Products link: Routes to /products page
+            Main browsing experience with filters and grid
+          */}
+          <Link
+            href="/products"
             className="
               text-sm text-white/60
               hover:text-white
@@ -66,9 +92,14 @@ export default function Navbar() {
             "
           >
             Products
-          </a>
-          <a
-            href="#categories"
+          </Link>
+
+          {/* 
+            Categories link: Routes to /products page with categories section
+            Scrolls to the category filter chips on the products page
+          */}
+          <Link
+            href="/products#categories"
             className="
               text-sm text-white/60
               hover:text-white
@@ -76,7 +107,7 @@ export default function Navbar() {
             "
           >
             Categories
-          </a>
+          </Link>
         </div>
       </div>
     </nav>
