@@ -2,13 +2,12 @@
  * Hero Component
  *
  * The main introductory section displayed on the homepage.
- * Contains a label, headline, subtext, and a call-to-action button.
+ * Contains a label, headline, subtext, and call-to-action buttons.
  *
- * Design notes:
- * - Designed to sit in a side-by-side layout with scroll columns
- * - Left-aligned text
- * - Subtle fade-in animation on load
- * - Strong CTA button with hover glow effect
+ * Design v2.0:
+ * - Display font (Syne) for headline
+ * - Layered grey color system
+ * - Refined button system with micro-interactions
  *
  * Layout context:
  * - On desktop: Sits on the left side (~40-45% width) next to scroll columns
@@ -26,51 +25,34 @@ export default function Hero() {
     <div className="w-full animate-fadeIn">
       {/* 
         Small label above the heading.
-        - Uppercase for stylistic emphasis
-        - Light gray (muted) for visual hierarchy
-        - Small text with letter spacing
+        - Uses text-meta style from globals.css
+        - Muted grey for visual hierarchy
       */}
-      <span
-        className="
-          text-xs font-semibold
-          tracking-widest uppercase
-          text-neutral-500
-        "
-      >
+      <span className="text-meta text-text-muted">
         Curated Rep Finds
       </span>
 
       {/* 
-        Main headline: The core message of zayfinds.
-        - Large text that scales appropriately
+        Main headline: Display font for brand impact
+        - Uses Syne display font
         - Extra-bold weight for maximum impact
-        - White text for contrast
-        - Tight leading for compact appearance
-        - Slightly smaller on desktop to fit side-by-side layout
+        - Primary text color (off-white)
+        - Tight line height for compact appearance
       */}
-      <h1
-        className="
-          mt-4
-          text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl
-          font-extrabold
-          leading-[1.1]
-          text-white
-          tracking-tight
-        "
-      >
+      <h1 className="heading-hero mt-4">
         We do not gate keep over here
       </h1>
 
       {/* 
         Subtext: Explains what zayfinds is about.
-        - Muted text (neutral-400) for hierarchy
-        - Max width for readable line length
+        - Secondary text color for hierarchy
+        - Comfortable reading width
       */}
       <p
         className="
-          mt-5
+          mt-6
           text-base md:text-lg
-          text-neutral-400
+          text-text-secondary
           max-w-md
           leading-relaxed
         "
@@ -79,64 +61,26 @@ export default function Hero() {
       </p>
 
       {/* 
-        CTA buttons container: Primary and secondary actions.
-        - Flex row on larger screens, stacked on mobile
-        - Gap for spacing between buttons
+        CTA buttons container
+        - Primary: Browse products (high visibility)
+        - Secondary: View categories (outline style)
+        
+        See app/globals.css for button system definitions.
       */}
-      <div className="mt-8 flex flex-col sm:flex-row gap-4">
-        {/* 
-          Primary CTA button: Links to the products page.
-          - Solid white background for high visibility
-          - Black text for contrast
-          - Rounded corners
-          - Hover: scale up slightly with subtle glow
-        */}
-        <Link
-          href="/products"
-          className="
-            inline-flex items-center justify-center
-            px-7 py-3.5
-            text-base font-semibold
-            text-black
-            bg-white
-            rounded-lg
-            transition-all duration-300
-            hover:scale-105
-            hover:shadow-[0_0_30px_rgba(255,255,255,0.3)]
-          "
-        >
+      <div className="mt-10 flex flex-col sm:flex-row gap-4">
+        {/* Primary CTA */}
+        <Link href="/products" className="btn-primary btn-lg">
           Browse products
         </Link>
 
-        {/* 
-          Secondary CTA: Subtle outline button.
-          - Transparent background
-          - White border
-          - Links to categories section
-        */}
-        <Link
-          href="/products#categories"
-          className="
-            inline-flex items-center justify-center
-            px-7 py-3.5
-            text-base font-semibold
-            text-white
-            border border-white/30
-            rounded-lg
-            transition-all duration-300
-            hover:border-white/60
-            hover:bg-white/5
-          "
-        >
+        {/* Secondary CTA */}
+        <a href="#featured-categories" className="btn-secondary btn-lg">
           View categories
-        </Link>
+        </a>
       </div>
 
-      {/* 
-        Scroll hint: Indicates more content below (mobile only).
-        Small muted text with arrow.
-      */}
-      <p className="mt-10 text-xs text-neutral-600 lg:hidden">
+      {/* Scroll hint (mobile only) */}
+      <p className="mt-12 text-xs text-text-subtle lg:hidden">
         ↓ Scroll to explore
       </p>
     </div>

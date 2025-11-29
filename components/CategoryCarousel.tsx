@@ -4,21 +4,12 @@
  * CategoryCarousel Component
  *
  * A horizontal auto-scrolling carousel of category cards.
- * Inspired by finds.org's featured categories section.
  *
- * Features:
- * - Auto-scroll animation (infinite horizontal loop)
- * - Edge fade gradient effect (cards fade in/out at boundaries)
- * - Large cards with category label at top and icon/placeholder image
- * - Pause on hover for better UX
- * - Each card links to /products?category=X
- *
- * Design:
- * - Full-width edge-to-edge layout
- * - Proportionate dark cards (like finds.org)
- * - Category name at top in uppercase
- * - Large icon/placeholder in center
- * - Smooth gradient fade at edges
+ * Design v2.0:
+ * - Display font for section heading
+ * - Layered grey surface colors
+ * - Gradient fade at edges
+ * - Refined card styling with micro-interactions
  */
 
 import Link from "next/link";
@@ -28,17 +19,13 @@ import { Category } from "@/types/product";
  * Category data with display labels and icons.
  */
 interface CategoryItem {
-  /** The category value (matches Category type) */
   value: Category;
-  /** Display label for the card (uppercase) */
   label: string;
-  /** Emoji icon for visual interest */
   icon: string;
 }
 
 /**
- * List of categories to display in the carousel.
- * Ordered by popularity/importance.
+ * List of categories to display.
  */
 const CATEGORIES: CategoryItem[] = [
   { value: "shoes", label: "SHOES", icon: "👟" },
@@ -55,98 +42,52 @@ const CATEGORIES: CategoryItem[] = [
 ];
 
 /**
- * CategoryCarousel renders a horizontal auto-scrolling carousel of category cards.
- * Full-width with gradient fade effects at edges.
+ * CategoryCarousel renders an auto-scrolling carousel.
  */
 export default function CategoryCarousel() {
-  /* Duplicate categories for seamless infinite scroll */
   const duplicatedCategories = [...CATEGORIES, ...CATEGORIES];
 
   return (
     <section className="w-full py-8 md:py-16">
-      {/* 
-        Section header with title and "ALL PRODUCTS" button.
-        Edge-to-edge positioning like finds.org.
-      */}
+      {/* Section header with display font */}
       <div className="px-6 md:px-12 lg:px-16 flex items-center justify-between mb-8 md:mb-12">
-        <h2
-          className="
-            text-2xl md:text-3xl lg:text-4xl
-            font-black
-            text-white
-            tracking-tight
-            uppercase
-          "
-        >
+        <h2 className="heading-section">
           Featured Categories
         </h2>
 
-        {/* 
-          All Products button: Styled like finds.org.
-        */}
-        <Link
-          href="/products"
-          className="
-            hidden md:inline-block
-            px-6 py-3
-            text-sm font-bold
-            tracking-wider uppercase
-            text-black
-            bg-white
-            rounded-full
-            border-2 border-white
-            transition-all duration-300
-            hover:bg-transparent
-            hover:text-white
-          "
-        >
+        {/* Desktop CTA button */}
+        <Link href="/products" className="hidden md:inline-block btn-primary">
           All Products
         </Link>
       </div>
 
-      {/* 
-        Full-width carousel container.
-        - No horizontal padding (edge-to-edge)
-        - Relative for gradient overlays
-      */}
+      {/* Full-width carousel container */}
       <div className="relative w-full overflow-hidden group">
-        {/* 
-          LEFT EDGE GRADIENT: Fade from black to transparent.
-          Creates smooth visual boundary.
-        */}
+        {/* Left edge gradient */}
         <div
           className="
             absolute left-0 top-0
             w-20 md:w-32 lg:w-40
             h-full
-            bg-gradient-to-r from-black to-transparent
+            bg-gradient-to-r from-surface-base to-transparent
             z-10
             pointer-events-none
           "
         />
 
-        {/* 
-          RIGHT EDGE GRADIENT: Fade from transparent to black.
-          Creates smooth visual boundary.
-        */}
+        {/* Right edge gradient */}
         <div
           className="
             absolute right-0 top-0
             w-20 md:w-32 lg:w-40
             h-full
-            bg-gradient-to-l from-black to-transparent
+            bg-gradient-to-l from-surface-base to-transparent
             z-10
             pointer-events-none
           "
         />
 
-        {/* 
-          Auto-scrolling inner container.
-          - Uses CSS animation for smooth infinite scroll
-          - Animation pauses on hover
-          - Duplicated content for seamless loop
-          - w-max ensures percentage translation works
-        */}
+        {/* Auto-scrolling content */}
         <div
           className="
             flex gap-4
@@ -164,35 +105,31 @@ export default function CategoryCarousel() {
                 w-[180px] md:w-[240px] lg:w-[280px]
                 h-[220px] md:h-[280px] lg:h-[320px]
                 flex flex-col
-                bg-neutral-900
-                border border-white/10
+                bg-surface-elevated
+                border border-border-default
                 rounded-2xl
                 overflow-hidden
                 transition-all duration-300
-                hover:border-white/30
-                hover:shadow-[0_0_30px_rgba(255,255,255,0.1)]
+                hover:border-border-strong
+                hover:shadow-[0_0_30px_rgba(255,255,255,0.08)]
+                hover:-translate-y-1
               "
             >
-              {/* 
-                Category label: At top of card, uppercase.
-              */}
+              {/* Category label */}
               <div className="px-4 pt-4 md:px-5 md:pt-5">
                 <span
                   className="
                     text-sm md:text-base lg:text-lg
                     font-bold
                     tracking-wider
-                    text-white
+                    text-text-primary
                   "
                 >
                   {category.label}
                 </span>
               </div>
 
-              {/* 
-                Icon area: Large centered icon/placeholder.
-                Takes up remaining space.
-              */}
+              {/* Icon area */}
               <div
                 className="
                   flex-1
@@ -201,7 +138,7 @@ export default function CategoryCarousel() {
                   md:px-5 md:pb-5
                 "
               >
-                <span className="text-5xl md:text-6xl lg:text-7xl opacity-80">
+                <span className="text-5xl md:text-6xl lg:text-7xl opacity-70">
                   {category.icon}
                 </span>
               </div>
@@ -210,26 +147,9 @@ export default function CategoryCarousel() {
         </div>
       </div>
 
-      {/* 
-        Mobile "All Products" button (shown below carousel).
-      */}
+      {/* Mobile CTA button */}
       <div className="md:hidden mt-8 text-center">
-        <Link
-          href="/products"
-          className="
-            inline-block
-            px-6 py-3
-            text-sm font-bold
-            tracking-wider uppercase
-            text-black
-            bg-white
-            rounded-full
-            border-2 border-white
-            transition-all duration-300
-            active:bg-transparent
-            active:text-white
-          "
-        >
+        <Link href="/products" className="btn-primary">
           All Products
         </Link>
       </div>

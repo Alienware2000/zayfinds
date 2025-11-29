@@ -1,19 +1,29 @@
 /**
  * ProductCard Component
  *
- * Displays a single product in a card format with image, name, price, and buy button.
- * Used as the building block for the ProductGrid component.
+ * Displays a single product in a card format with image, name, price, and action buttons.
+ * Used as the building block for the ProductGrid component and related products section.
  *
- * Design notes:
- * - Server component (no local state required)
- * - Vertical flex layout with rounded corners and subtle border
- * - Hover effect: lifts up slightly with brighter border
- * - Image placeholder shown when imageUrl is null
- * - Optional badge in top-left corner
- * - External "Buy" link opens in new tab
+ * Design v2.0:
+ * - Layered grey surface colors
+ * - Micro-interactions: scale, lift, border glow
+ * - Image zoom on hover
+ * - Refined button styling
+ *
+ * Button variants:
+ * - "full" (default): Shows both BUY (external) and View Details (internal) buttons
+ * - "buy-only": Shows only the BUY button (external link)
+ * - "details-only": Shows only "View Details" button (internal link to product page)
  */
 
+import Link from "next/link";
 import { Product } from "@/types/product";
+import { getProductSlug } from "@/lib/products";
+
+/**
+ * Button variant determines which CTAs are shown on the card.
+ */
+type ButtonVariant = "full" | "buy-only" | "details-only";
 
 /**
  * Props for the ProductCard component.
@@ -23,59 +33,58 @@ interface ProductCardProps {
   product: Product;
   /** Optional badge text to display in top-left corner */
   badge?: string;
+  /**
+   * Which buttons to show:
+   * - "full": BUY + View Details (default, for main grid)
+   * - "buy-only": Only BUY button
+   * - "details-only": Only View Details (for recommendations)
+   */
+  buttonVariant?: ButtonVariant;
 }
 
 /**
  * ProductCard renders a single product as a styled card.
- * It displays the product image (or placeholder), name, price, and a buy button.
  */
-export default function ProductCard({ product, badge }: ProductCardProps) {
-  /**
-   * Determine the display price.
-   * If priceRaw is empty or falsy, show fallback text.
-   */
+export default function ProductCard({
+  product,
+  badge,
+  buttonVariant = "full",
+}: ProductCardProps) {
   const displayPrice = product.priceRaw || "Price on site";
-
-  /**
-   * Check if we have a valid image URL to display.
-   * Null, undefined, or empty string means no image.
-   */
   const hasImage = product.imageUrl !== null && product.imageUrl !== "";
+  const productSlug = getProductSlug(product);
 
   return (
     <article
       className="
+        group
         flex flex-col
         p-2 md:p-3
         rounded-xl
-        border border-white/10
-        bg-neutral-950/60
+        bg-surface-elevated
+        border border-border-default
         transition-all duration-300 ease-out
         hover:-translate-y-1
-        hover:border-white/25
-        hover:shadow-lg hover:shadow-black/20
+        hover:border-border-strong
+        hover:shadow-lg hover:shadow-black/40
       "
     >
       {/* 
-        Image area: Fixed aspect ratio container with optional badge.
-        - aspect-[4/5] creates a portrait-style ratio
-        - overflow-hidden clips the image to rounded corners
-        - relative for badge positioning
+        Image area: Clickable with hover zoom effect
       */}
-      <div
+      <Link
+        href={`/products/${productSlug}`}
         className="
           relative
           w-full
           aspect-[4/5]
           overflow-hidden
           rounded-lg
-          bg-neutral-900
+          bg-surface-raised
+          block
         "
       >
-        {/* 
-          Optional badge: Displayed in top-left corner.
-          Only rendered if badge prop is provided.
-        */}
+        {/* Optional badge */}
         {badge && (
           <div
             className="
@@ -83,7 +92,7 @@ export default function ProductCard({ product, badge }: ProductCardProps) {
               px-2 py-1
               text-[10px] font-bold
               uppercase tracking-wider
-              bg-white text-black
+              bg-text-primary text-surface-base
               rounded
               z-10
             "
@@ -93,93 +102,94 @@ export default function ProductCard({ product, badge }: ProductCardProps) {
         )}
 
         {hasImage ? (
-          /* 
-            Product image: Covers the container.
-            - object-cover ensures image fills space without distortion
-            - w-full h-full stretches to container bounds
-          */
           <img
             src={product.imageUrl!}
             alt={product.name}
-            className="w-full h-full object-cover"
+            className="
+              w-full h-full object-cover
+              transition-transform duration-500 ease-out
+              group-hover:scale-105
+            "
           />
         ) : (
-          /* 
-            Placeholder: Shown when no image URL is provided.
-            - Subtle gradient background for visual interest
-            - Centered muted text as indicator
-          */
           <div
             className="
               w-full h-full
               flex items-center justify-center
-              bg-gradient-to-br from-neutral-800 to-neutral-900
+              bg-gradient-to-br from-surface-raised to-surface-elevated
             "
           >
-            <span className="text-xs text-neutral-600 uppercase tracking-wider">
+            <span className="text-xs text-text-subtle uppercase tracking-wider">
               No image
             </span>
           </div>
         )}
-      </div>
+      </Link>
 
-      {/* 
-        Text area: Product name and price.
-        - mt-2 for spacing from image
-        - flex-grow allows this section to expand if needed
-      */}
-      <div className="mt-2 flex-grow">
-        {/* 
-          Product name: Truncated to 2 lines max.
-          - line-clamp-2 cuts off long names with ellipsis
-          - font-medium for slight emphasis
-        */}
+      {/* Text area: Clickable name and price */}
+      <Link href={`/products/${productSlug}`} className="mt-3 flex-grow block">
         <h3
           className="
             text-xs md:text-sm font-medium
-            text-white
+            text-text-primary
             line-clamp-2
             leading-snug
+            group-hover:text-text-secondary
+            transition-colors duration-200
           "
         >
           {product.name}
         </h3>
 
-        {/* 
-          Price: Displayed in muted gray.
-          - mt-1 for small spacing from name
-          - text-neutral-400 for muted appearance
-        */}
-        <p className="mt-1 text-xs md:text-sm text-neutral-400">
+        <p className="mt-1 text-xs md:text-sm text-text-muted">
           {displayPrice}
         </p>
-      </div>
+      </Link>
 
-      {/* 
-        Button area: External buy link.
-        - mt-2 for spacing from text area
-        - Opens in new tab with security attributes
-      */}
-      <a
-        href={product.buyUrl}
-        target="_blank"
-        rel="noreferrer"
-        className="
-          mt-2
-          w-full
-          py-2
-          text-center
-          text-[10px] md:text-xs font-medium
-          uppercase tracking-wide
-          text-white
-          border border-white/30
-          rounded-lg
-          transition-colors duration-200
-          hover:bg-white hover:text-black
-        "
-      >
-        Buy
-      </a>
+      {/* Button area */}
+      <div className="mt-3 space-y-2">
+        {/* FULL VARIANT */}
+        {buttonVariant === "full" && (
+          <>
+            <a
+              href={product.buyUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-primary btn-sm btn-full"
+            >
+              Buy
+            </a>
+            <Link
+              href={`/products/${productSlug}`}
+              className="btn-secondary btn-sm btn-full"
+            >
+              View Details
+            </Link>
+          </>
+        )}
+
+        {/* BUY-ONLY VARIANT */}
+        {buttonVariant === "buy-only" && (
+          <a
+            href={product.buyUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-primary btn-sm btn-full"
+          >
+            Buy
+          </a>
+        )}
+
+        {/* DETAILS-ONLY VARIANT */}
+        {buttonVariant === "details-only" && (
+          <Link
+            href={`/products/${productSlug}`}
+            className="btn-secondary btn-sm btn-full"
+          >
+            View Details
+          </Link>
+        )}
+      </div>
     </article>
   );
 }

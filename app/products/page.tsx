@@ -1,15 +1,14 @@
 "use client";
 
 /**
- * ProductsPage Component (FINDS-style layout)
+ * ProductsPage Component
  *
  * The full product browsing experience for zayfinds.
- * Redesigned to match FINDS structure with:
- * - Breadcrumb navigation
- * - Full-width category tab bar
- * - Search + Sort toolbar
- * - Dense product grid
- * - Load more button
+ *
+ * Design v2.0:
+ * - Layered grey surface colors
+ * - Refined typography
+ * - Enhanced form controls
  *
  * Route: /products
  */
@@ -27,16 +26,13 @@ import Footer from "@/components/Footer";
 /* Data imports */
 import { mockProducts } from "@/data/productsMock";
 
-/* Type imports */
-import { Product } from "@/types/product";
-
 /**
  * Sort options for the product list.
  */
 type SortOption = "default" | "price-asc" | "price-desc";
 
 /**
- * Get display label for breadcrumb based on selected category.
+ * Get display label for breadcrumb.
  */
 function getCategoryLabel(value: CategoryFilterValue): string {
   if (value === "all") return "ALL";
@@ -45,46 +41,24 @@ function getCategoryLabel(value: CategoryFilterValue): string {
 }
 
 /**
- * ProductsPage is the main browsing interface for zayfinds.
- * Manages category, search, and sort state.
+ * ProductsPage is the main browsing interface.
  */
 export default function ProductsPage() {
-  /* ===========================================
-     STATE
-     =========================================== */
-
-  /** Currently selected category filter */
   const [selectedCategory, setSelectedCategory] =
     useState<CategoryFilterValue>("all");
-
-  /** Search query for filtering by product name */
   const [searchQuery, setSearchQuery] = useState("");
-
-  /** Sort option for ordering products */
   const [sortBy, setSortBy] = useState<SortOption>("default");
-
-  /** Number of products to display (for load more) */
   const [displayCount, setDisplayCount] = useState(20);
 
-  /* ===========================================
-     FILTERING & SORTING PIPELINE
-     =========================================== */
-
-  /**
-   * Memoized filtered and sorted products list.
-   * Pipeline: category filter → search filter → sort → limit
-   */
   const processedProducts = useMemo(() => {
     let result = [...mockProducts];
 
-    // 1. Category filter
     if (selectedCategory !== "all") {
       result = result.filter(
         (product) => product.category === selectedCategory
       );
     }
 
-    // 2. Search filter (case-insensitive name match)
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase().trim();
       result = result.filter((product) =>
@@ -92,66 +66,54 @@ export default function ProductsPage() {
       );
     }
 
-    // 3. Sort
     if (sortBy === "price-asc") {
       result.sort((a, b) => (a.price ?? 0) - (b.price ?? 0));
     } else if (sortBy === "price-desc") {
       result.sort((a, b) => (b.price ?? 0) - (a.price ?? 0));
     }
-    // "default" keeps original order
 
     return result;
   }, [selectedCategory, searchQuery, sortBy]);
 
-  /** Products to display (limited by displayCount) */
   const displayedProducts = processedProducts.slice(0, displayCount);
-
-  /** Whether there are more products to load */
   const hasMore = displayCount < processedProducts.length;
 
-  /** Load more products */
   const handleLoadMore = () => {
     setDisplayCount((prev) => prev + 20);
   };
-
-  /* ===========================================
-     RENDER
-     =========================================== */
 
   return (
     <>
       <Navbar />
 
-      <main className="min-h-screen bg-black">
-        {/* ===========================================
-            BREADCRUMB
-            =========================================== */}
+      <main className="min-h-screen bg-surface-base">
+        {/* Breadcrumb */}
         <div className="px-6 md:px-12 lg:px-16 py-4">
-          <nav className="text-xs text-neutral-500 tracking-wider">
-            <span className="hover:text-white cursor-pointer">HOME</span>
-            <span className="mx-2">•</span>
-            <span className="hover:text-white cursor-pointer">PRODUCTS</span>
-            <span className="mx-2">•</span>
-            <span className="text-white">
+          <nav className="text-meta text-text-muted">
+            <span className="hover:text-text-primary cursor-pointer transition-colors">
+              HOME
+            </span>
+            <span className="mx-2 text-text-subtle">•</span>
+            <span className="hover:text-text-primary cursor-pointer transition-colors">
+              PRODUCTS
+            </span>
+            <span className="mx-2 text-text-subtle">•</span>
+            <span className="text-text-primary">
               {getCategoryLabel(selectedCategory)}
             </span>
           </nav>
         </div>
 
-        {/* ===========================================
-            CATEGORY TAB BAR
-            =========================================== */}
+        {/* Category Tab Bar */}
         <CategoryFilter
           value={selectedCategory}
           onChange={(val) => {
             setSelectedCategory(val);
-            setDisplayCount(20); // Reset on category change
+            setDisplayCount(20);
           }}
         />
 
-        {/* ===========================================
-            SEARCH + SORT TOOLBAR
-            =========================================== */}
+        {/* Search + Sort Toolbar */}
         <div
           className="
             px-6 md:px-12 lg:px-16
@@ -160,14 +122,13 @@ export default function ProductsPage() {
             items-stretch sm:items-center
             justify-between
             gap-4
-            border-b border-white/10
+            border-b border-border-default
           "
         >
           {/* Search input */}
           <div className="relative flex-1 max-w-md">
-            {/* Search icon */}
             <svg
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500"
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-subtle"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -187,13 +148,13 @@ export default function ProductsPage() {
               className="
                 w-full
                 pl-10 pr-4 py-3
-                bg-neutral-900
-                border border-white/10
+                bg-surface-elevated
+                border border-border-default
                 rounded-lg
-                text-sm text-white
-                placeholder:text-neutral-500
+                text-sm text-text-primary
+                placeholder:text-text-subtle
                 focus:outline-none
-                focus:border-white/30
+                focus:border-border-strong
                 transition-colors
               "
             />
@@ -201,20 +162,18 @@ export default function ProductsPage() {
 
           {/* Sort dropdown */}
           <div className="flex items-center gap-3">
-            <span className="text-xs text-neutral-500 tracking-wider">
-              SORT BY:
-            </span>
+            <span className="text-meta text-text-muted">SORT BY:</span>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as SortOption)}
               className="
                 px-4 py-3
-                bg-neutral-900
-                border border-white/10
+                bg-surface-elevated
+                border border-border-default
                 rounded-lg
-                text-sm text-white
+                text-sm text-text-primary
                 focus:outline-none
-                focus:border-white/30
+                focus:border-border-strong
                 cursor-pointer
                 transition-colors
               "
@@ -226,39 +185,22 @@ export default function ProductsPage() {
           </div>
         </div>
 
-        {/* ===========================================
-            PRODUCT COUNT & GRID
-            =========================================== */}
+        {/* Product count & grid */}
         <div className="px-6 md:px-12 lg:px-16 py-8">
-          {/* Product count */}
-          <p className="text-xs text-neutral-500 tracking-wider mb-6">
+          <p className="text-meta text-text-muted mb-6">
             SHOWING {displayedProducts.length} OF {processedProducts.length}{" "}
             PRODUCTS
           </p>
 
-          {/* Product grid */}
           <ProductGrid products={displayedProducts} />
         </div>
 
-        {/* ===========================================
-            LOAD MORE BUTTON
-            =========================================== */}
+        {/* Load more button */}
         {hasMore && (
           <div className="px-6 md:px-12 lg:px-16 pb-12 text-center">
             <button
               onClick={handleLoadMore}
-              className="
-                px-12 py-4
-                text-sm font-semibold
-                tracking-wider uppercase
-                text-white
-                bg-neutral-900
-                border border-white/20
-                rounded-lg
-                transition-all duration-200
-                hover:bg-neutral-800
-                hover:border-white/40
-              "
+              className="btn-secondary btn-lg px-12"
             >
               Load More
             </button>

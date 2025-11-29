@@ -2,13 +2,11 @@
  * Footer Component
  *
  * A simple, minimal footer for the site.
- * Displays site description and copyright notice.
  *
- * Design:
- * - Subtle top border for separation
- * - Muted text colors
- * - Centered content
- * - No icons or social links (MVP)
+ * Design v2.0:
+ * - Darker surface for visual separation
+ * - Layered grey text colors
+ * - Optional noise texture
  */
 
 export default function Footer() {
@@ -16,27 +14,38 @@ export default function Footer() {
     <footer
       className="
         w-full
-        border-t border-white/10
-        bg-neutral-950
-        py-8 md:py-12
+        border-t border-border-default
+        bg-surface-nav
+        py-10 md:py-14
+        noise-overlay
       "
     >
-      <div className="max-w-6xl mx-auto px-4 text-center">
-        {/* 
-          Site description: Brief explanation of what zayfinds does.
-        */}
-        <p className="text-sm text-neutral-500 mb-2">
-          zayfinds — curated rep finds. Links redirect to external sellers.
+      <div className="max-w-6xl mx-auto px-6 md:px-12 text-center relative">
+        {/* Site name in display font */}
+        <p
+          className="
+            font-display
+            text-sm
+            font-bold
+            tracking-[0.2em]
+            uppercase
+            text-text-muted
+            mb-4
+          "
+        >
+          ZAYFINDS
         </p>
 
-        {/* 
-          Copyright notice.
-        */}
-        <p className="text-xs text-neutral-600">
+        {/* Description */}
+        <p className="text-sm text-text-muted mb-3">
+          Curated rep finds — links redirect to external sellers.
+        </p>
+
+        {/* Copyright */}
+        <p className="text-xs text-text-subtle">
           © 2025 zayfinds
         </p>
       </div>
     </footer>
   );
 }
-

@@ -39,6 +39,12 @@ export interface Product {
   name: string;
 
   /**
+   * URL-safe slug for routing (e.g., "vetements-silk-road-tee").
+   * Optional in the interface — can be derived from name if not provided.
+   */
+  slug?: string;
+
+  /**
    * Numeric price in USD for sorting/filtering.
    * Null if price is unknown or varies by option.
    */
@@ -61,4 +67,11 @@ export interface Product {
 
   /** Product category for filtering */
   category: Category;
+
+  /**
+   * Optional array of additional image URLs for gallery/detail pages.
+   * Used on product detail page for image carousel (future feature).
+   * Can be empty or undefined; single imageUrl is always the primary.
+   */
+  galleryImages?: string[];
 }

@@ -1,25 +1,21 @@
 "use client";
 
 /**
- * CategoryFilter Component (FINDS-style Tab Bar)
+ * CategoryFilter Component (Tab Bar)
  *
  * A full-width tab bar for selecting product categories.
- * Redesigned to match FINDS' rectangular tab style.
  *
- * Design notes:
- * - Full-width stripe layout
- * - Rectangular tabs (not pill-shaped)
- * - Active tab: filled background, bold text
- * - Inactive tab: darker background, subtle border
- * - Horizontally scrollable on mobile
+ * Design v2.0:
+ * - Layered grey surface colors
+ * - Active tab with scale + bold contrast
+ * - Smooth hover transitions
+ * - Refined typography
  */
 
 import { Category } from "@/types/product";
 
 /**
  * CategoryFilterValue represents the possible filter states.
- * - "all": Show all products (no category filtering)
- * - Category: Show only products matching that category
  */
 export type CategoryFilterValue = Category | "all";
 
@@ -27,14 +23,12 @@ export type CategoryFilterValue = Category | "all";
  * Props for the CategoryFilter component.
  */
 interface CategoryFilterProps {
-  /** The currently selected filter value */
   value: CategoryFilterValue;
-  /** Callback fired when user selects a different filter */
   onChange: (next: CategoryFilterValue) => void;
 }
 
 /**
- * Tab configuration with value and display label.
+ * Tab configuration.
  */
 interface TabConfig {
   value: CategoryFilterValue;
@@ -42,8 +36,7 @@ interface TabConfig {
 }
 
 /**
- * All available filter tabs in display order.
- * Labels are uppercase for FINDS-style appearance.
+ * All available filter tabs.
  */
 const TABS: TabConfig[] = [
   { value: "all", label: "ALL" },
@@ -62,7 +55,6 @@ const TABS: TabConfig[] = [
 
 /**
  * CategoryFilter renders a full-width tab bar.
- * Clicking a tab updates the category filter state.
  */
 export default function CategoryFilter({
   value,
@@ -73,17 +65,12 @@ export default function CategoryFilter({
       id="categories"
       className="
         w-full
-        bg-neutral-950
-        border-y border-white/10
+        bg-surface-nav
+        border-y border-border-default
         overflow-x-auto
         scrollbar-hide
       "
     >
-      {/* 
-        Inner flex container for tabs.
-        - flex-nowrap prevents wrapping
-        - min-w-max ensures tabs don't compress
-      */}
       <div className="flex min-w-max">
         {TABS.map((tab) => {
           const isActive = value === tab.value;
@@ -94,18 +81,19 @@ export default function CategoryFilter({
               onClick={() => onChange(tab.value)}
               className={`
                 px-6 py-4
-                text-sm font-semibold
-                tracking-wider
-                border-r border-white/10
-                transition-all duration-200
+                text-xs
+                font-semibold
+                tracking-[0.1em]
+                border-r border-border-default
                 cursor-pointer
                 whitespace-nowrap
+                transition-all duration-200
                 ${
                   isActive
-                    ? /* Active state: lighter background, white text */
-                      "bg-neutral-800 text-white"
-                    : /* Inactive state: dark background, muted text */
-                      "bg-neutral-950 text-neutral-400 hover:bg-neutral-900 hover:text-neutral-200"
+                    ? /* Active: bright background, dark text, slight scale */
+                      "bg-text-primary text-surface-base scale-[1.02] font-bold"
+                    : /* Inactive: dark surface, muted text */
+                      "bg-surface-elevated text-text-muted hover:bg-surface-raised hover:text-text-secondary"
                 }
               `}
             >

@@ -3,49 +3,113 @@
 /**
  * Global Styles for zayfinds
  *
- * Design system:
- * - Dark theme (black background, white text)
- * - Geist font family
- * - Smooth animations
- * - Consistent spacing
+ * Design System v2.0
+ * - Layered monochrome palette (near-black to off-white)
+ * - Display + body typography system
+ * - Refined button system with micro-interactions
+ * - Smooth, responsive animations
  */
 
 /* ===========================================
-   CSS Variables
+   CSS VARIABLES - COLOR & TYPOGRAPHY TOKENS
    =========================================== */
 
 :root {
-  /* Brand colors */
-  --color-bg: #000000;
-  --color-text: #ffffff;
-  --color-text-muted: #a1a1a1;
-
-  /* Vertical scroll animation variables (higher = slower) */
+  /* ===========================================
+     SURFACE COLORS (Layered Greys)
+     From darkest to lightest
+     =========================================== */
+  
+  /* Base page background - near black, not pure #000 */
+  --surface-base: #0a0a0a;
+  
+  /* Elevated surface - cards, panels */
+  --surface-elevated: #111111;
+  
+  /* Raised surface - hover states, highlights */
+  --surface-raised: #1a1a1a;
+  
+  /* Subtle surface - borders, dividers */
+  --surface-subtle: #222222;
+  
+  /* Navigation & footer band */
+  --surface-nav: #080808;
+  
+  /* ===========================================
+     TEXT COLORS (Off-white to muted)
+     =========================================== */
+  
+  /* Primary text - headlines, important content */
+  --text-primary: #f5f5f5;
+  
+  /* Secondary text - body copy, descriptions */
+  --text-secondary: #e0e0e0;
+  
+  /* Muted text - meta info, breadcrumbs */
+  --text-muted: #888888;
+  
+  /* Subtle text - placeholders, hints */
+  --text-subtle: #555555;
+  
+  /* ===========================================
+     BORDER COLORS
+     =========================================== */
+  
+  --border-default: rgba(255, 255, 255, 0.08);
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --border-strong: rgba(255, 255, 255, 0.15);
+  --border-focus: rgba(255, 255, 255, 0.4);
+  
+  /* ===========================================
+     ANIMATION DURATIONS
+     =========================================== */
+  
   --scroll-duration: 90s;
   --scroll-duration-slow: 120s;
   --scroll-duration-fast: 75s;
-
-  /* Horizontal scroll animation duration (category carousel) - slower for smooth feel */
   --scroll-horizontal-duration: 70s;
+  
+  /* Transition speeds */
+  --transition-fast: 150ms;
+  --transition-base: 200ms;
+  --transition-slow: 300ms;
 }
 
 /* ===========================================
-   Tailwind Theme Extensions
+   TAILWIND THEME EXTENSIONS
    =========================================== */
 
 @theme inline {
-  --color-background: var(--color-bg);
-  --color-foreground: var(--color-text);
+  /* Surface colors */
+  --color-surface-base: var(--surface-base);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-subtle: var(--surface-subtle);
+  --color-surface-nav: var(--surface-nav);
+  
+  /* Text colors */
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-text-subtle: var(--text-subtle);
+  
+  /* Border colors */
+  --color-border-default: var(--border-default);
+  --color-border-subtle: var(--border-subtle);
+  --color-border-strong: var(--border-strong);
+  
+  /* Fonts */
+  --font-display: var(--font-display);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-
-  /* Custom animation for fade-in effect */
+  
+  /* Animations */
   --animate-fadeIn: fadeIn 0.6s ease-out forwards;
   --animate-slideUp: slideUp 0.5s ease-out forwards;
 }
 
 /* ===========================================
-   Base Styles
+   BASE STYLES
    =========================================== */
 
 *,
@@ -59,18 +123,81 @@ html {
 }
 
 body {
-  background: var(--color-bg);
-  color: var(--color-text);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  background: var(--surface-base);
+  color: var(--text-secondary);
+  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
   margin: 0;
   padding: 0;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* ===========================================
-   Custom Animations
+   TYPOGRAPHY SYSTEM
    =========================================== */
 
-/* Fade in from transparent to visible */
+/**
+ * Display Headings
+ * Use .font-display class for:
+ * - Site logo "ZAYFINDS"
+ * - Hero headlines
+ * - Major section titles
+ */
+.font-display {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+/* Display heading sizes */
+.heading-hero {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  color: var(--text-primary);
+}
+
+.heading-section {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-size: clamp(1.25rem, 3vw, 2rem);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.heading-card {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text-primary);
+}
+
+/* Body text styles */
+.text-body {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.text-meta {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ===========================================
+   CUSTOM ANIMATIONS
+   =========================================== */
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -82,7 +209,6 @@ body {
   }
 }
 
-/* Slide up animation */
 @keyframes slideUp {
   from {
     opacity: 0;
@@ -94,40 +220,31 @@ body {
   }
 }
 
-/**
- * Vertical Scroll Animations
- * Used for the 3-column product carousel on the homepage.
- * 
- * The animation moves the content by 50% (half the duplicated list)
- * so when it loops, it seamlessly continues from where the first
- * set of items ended.
- */
-
-/* Scroll upward: translateY(0) → translateY(-50%) */
 @keyframes scrollUp {
-  from {
-    transform: translateY(0);
-  }
-  to {
-    transform: translateY(-50%);
-  }
+  from { transform: translateY(0); }
+  to { transform: translateY(-50%); }
 }
 
-/* Scroll downward: translateY(-50%) → translateY(0) */
 @keyframes scrollDown {
-  from {
-    transform: translateY(-50%);
-  }
-  to {
-    transform: translateY(0);
-  }
+  from { transform: translateY(-50%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes scrollHorizontal {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* Subtle glow pulse for focus states */
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 0 2px var(--surface-base), 0 0 0 4px rgba(255, 255, 255, 0.3); }
+  50% { box-shadow: 0 0 0 2px var(--surface-base), 0 0 0 6px rgba(255, 255, 255, 0.15); }
 }
 
 /* ===========================================
-   Utility Classes
+   UTILITY CLASSES
    =========================================== */
 
-/* Hide scrollbar but keep functionality */
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -137,22 +254,15 @@ body {
   display: none;
 }
 
-/**
- * Vertical scroll utility classes.
- * Apply to containers with duplicated content for seamless looping.
- */
-
-/* Scroll up animation - default speed */
+/* Scroll animations */
 .animate-scroll-up {
   animation: scrollUp var(--scroll-duration) linear infinite;
 }
 
-/* Scroll down animation - default speed */
 .animate-scroll-down {
   animation: scrollDown var(--scroll-duration) linear infinite;
 }
 
-/* Speed variants */
 .animate-scroll-up-slow {
   animation: scrollUp var(--scroll-duration-slow) linear infinite;
 }
@@ -169,29 +279,277 @@ body {
   animation: scrollDown var(--scroll-duration-fast) linear infinite;
 }
 
-/* 
- * Note: Animation continues on hover (no pause).
- * Individual cards have their own hover highlight effects.
- */
-
-/**
- * Horizontal Scroll Animation
- * Used for the category carousel on the homepage.
- * 
- * Moves content leftward by 50% (half the duplicated list)
- * for seamless infinite looping.
- */
-
-@keyframes scrollHorizontal {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-/* Horizontal scroll animation class */
 .animate-scroll-horizontal {
   animation: scrollHorizontal var(--scroll-horizontal-duration) linear infinite;
+}
+
+/* ===========================================
+   BUTTON SYSTEM v2.0
+   
+   Refined button styles with better micro-interactions.
+   
+   Primary: Dark bg + white outline → hover fills white
+   Secondary: Transparent + soft outline → hover fills dark
+   =========================================== */
+
+/**
+ * Primary Button
+ * 
+ * Default: Dark background with white outline and white text
+ * Hover: Fill white, text turns black, subtle scale + shadow
+ * Used for: Browse products, Buy, main CTAs
+ */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.75rem;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-primary);
+  background-color: var(--surface-elevated);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: 
+    color var(--transition-fast) ease-out,
+    background-color var(--transition-fast) ease-out,
+    border-color var(--transition-fast) ease-out,
+    transform var(--transition-fast) ease-out,
+    box-shadow var(--transition-base) ease-out;
+}
+
+.btn-primary:hover {
+  color: #000000;
+  background-color: var(--text-primary);
+  border-color: var(--text-primary);
+  transform: scale(1.02);
+  box-shadow: 
+    0 4px 20px rgba(255, 255, 255, 0.15),
+    0 0 40px rgba(255, 255, 255, 0.1);
+}
+
+.btn-primary:focus {
+  outline: none;
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+/**
+ * Secondary Button
+ * 
+ * Default: Transparent with soft outline
+ * Hover: Dark grey fill + stronger outline
+ * Used for: View categories, Quality check, filters
+ */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.75rem;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: 
+    color var(--transition-fast) ease-out,
+    background-color var(--transition-fast) ease-out,
+    border-color var(--transition-fast) ease-out,
+    transform var(--transition-fast) ease-out;
+}
+
+.btn-secondary:hover {
+  color: var(--text-primary);
+  background-color: var(--surface-raised);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.btn-secondary:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--surface-base), 0 0 0 4px rgba(255, 255, 255, 0.2);
+}
+
+.btn-secondary:active {
+  transform: scale(0.98);
+}
+
+/* Button size variants */
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.6875rem;
+}
+
+.btn-lg {
+  padding: 1rem 2.25rem;
+  font-size: 0.875rem;
+}
+
+.btn-full {
+  width: 100%;
+}
+
+/* ===========================================
+   CARD SYSTEM
+   
+   Consistent card styling with hover micro-interactions.
+   =========================================== */
+
+.card {
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: 0.75rem;
+  transition: 
+    transform var(--transition-base) ease-out,
+    border-color var(--transition-base) ease-out,
+    box-shadow var(--transition-base) ease-out;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-strong);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* Card image hover effect */
+.card-image {
+  transition: transform var(--transition-slow) ease-out;
+}
+
+.card:hover .card-image {
+  transform: scale(1.02);
+}
+
+/* ===========================================
+   NAVIGATION LINK STYLES
+   
+   Smooth hover animations for nav items.
+   =========================================== */
+
+.nav-link {
+  position: relative;
+  color: var(--text-muted);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: 
+    color var(--transition-fast) ease-out,
+    letter-spacing var(--transition-base) ease-out;
+}
+
+.nav-link:hover {
+  color: var(--text-primary);
+  letter-spacing: 0.08em;
+}
+
+/* Underline animation */
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--text-primary);
+  transition: width var(--transition-base) ease-out;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* ===========================================
+   FILTER CHIP STYLES
+   
+   Category filter chips with selected state.
+   =========================================== */
+
+.filter-chip {
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid var(--border-default);
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: 
+    color var(--transition-fast) ease-out,
+    background-color var(--transition-fast) ease-out,
+    border-color var(--transition-fast) ease-out,
+    transform var(--transition-fast) ease-out;
+}
+
+.filter-chip:hover {
+  color: var(--text-secondary);
+  border-color: var(--border-strong);
+}
+
+.filter-chip-active {
+  color: #000000;
+  background: var(--text-primary);
+  border-color: var(--text-primary);
+  font-weight: 600;
+  transform: scale(1.05);
+}
+
+.filter-chip-active:hover {
+  color: #000000;
+  background: var(--text-primary);
+}
+
+/* ===========================================
+   SECTION SEPARATORS
+   
+   Subtle gradients and dividers between sections.
+   =========================================== */
+
+.section-divider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--border-default) 20%,
+    var(--border-default) 80%,
+    transparent
+  );
+}
+
+.section-gradient {
+  background: linear-gradient(
+    180deg,
+    var(--surface-base) 0%,
+    var(--surface-elevated) 50%,
+    var(--surface-base) 100%
+  );
+}
+
+/* Subtle noise texture overlay (optional) */
+.noise-overlay {
+  position: relative;
+}
+
+.noise-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.02;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
