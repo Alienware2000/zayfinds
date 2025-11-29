@@ -166,12 +166,7 @@ body {
   animation: scrollDown var(--scroll-duration-fast) linear infinite;
 }
 
-/* Pause animation on hover for better UX */
-.animate-scroll-up:hover,
-.animate-scroll-down:hover,
-.animate-scroll-up-slow:hover,
-.animate-scroll-up-fast:hover,
-.animate-scroll-down-slow:hover,
-.animate-scroll-down-fast:hover {
-  animation-play-state: paused;
-}
+/* 
+ * Note: Animation continues on hover (no pause).
+ * Individual cards have their own hover highlight effects.
+ */

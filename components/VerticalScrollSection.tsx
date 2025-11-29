@@ -9,15 +9,15 @@
  * - Left column: scrolls up
  * - Center column: scrolls down
  * - Right column: scrolls up (slower for parallax effect)
- * - Fixed height container with overflow hidden
+ * - Fills parent height
  *
  * Mobile/Tablet (<lg):
  * - Single horizontal scrollable row
  * - No vertical animation
  * - Touch-friendly drag scrolling
  *
- * This creates a visually dynamic section inspired by finds.org
- * without requiring user scroll interaction.
+ * Note: This component sits beside the sticky Hero section
+ * on desktop (finds.org inspired).
  */
 
 import { Product } from "@/types/product";
@@ -68,42 +68,23 @@ export default function VerticalScrollSection({ products }: VerticalScrollSectio
   const rightProducts = columnProducts[2] || columnProducts[0] || [];
 
   return (
-    <section className="w-full py-10 md:py-12">
-      {/* 
-        Section header: Label for the trending products area.
-        Consistent styling with other sections.
-      */}
-      <h2
-        className="
-          text-xs font-bold
-          tracking-widest uppercase
-          text-neutral-500
-          mb-6
-        "
-      >
-        Trending Products
-      </h2>
-
+    <div className="w-full h-full">
       {/* ===========================================
           DESKTOP LAYOUT (lg and above)
-          3 animated vertical columns
+          3 animated vertical columns - fills parent height
           =========================================== */}
       <div
         className="
           hidden lg:grid
           lg:grid-cols-3
-          gap-4
-          h-[600px]
+          gap-3
+          h-full
           overflow-hidden
-          rounded-2xl
-          border border-white/5
-          bg-neutral-950/30
-          p-4
+          p-2
         "
       >
         {/* 
           Left column: Scrolls upward at normal speed.
-          Creates upward motion on the left side.
         */}
         <VerticalScrollColumn
           products={leftProducts}
@@ -113,7 +94,6 @@ export default function VerticalScrollSection({ products }: VerticalScrollSectio
 
         {/* 
           Center column: Scrolls downward.
-          Creates contrast with the outer columns.
         */}
         <VerticalScrollColumn
           products={centerProducts}
@@ -123,7 +103,6 @@ export default function VerticalScrollSection({ products }: VerticalScrollSectio
 
         {/* 
           Right column: Scrolls upward at slower speed.
-          Creates parallax effect with the left column.
         */}
         <VerticalScrollColumn
           products={rightProducts}
@@ -134,38 +113,43 @@ export default function VerticalScrollSection({ products }: VerticalScrollSectio
 
       {/* ===========================================
           MOBILE/TABLET LAYOUT (below lg)
-          Single horizontal scrollable row
+          Single horizontal scrollable row with title
           =========================================== */}
-      <div
-        className="
-          lg:hidden
-          overflow-x-auto
-          scrollbar-hide
-          -mx-4 px-4
-        "
-      >
+      <div className="lg:hidden">
         {/* 
-          Horizontal flex container for cards.
-          - flex-nowrap prevents wrapping
-          - gap-4 for spacing between cards
-          - snap-x for smooth scroll snapping
+          Section title: Only shown on mobile.
         */}
-        <div className="flex flex-nowrap gap-4 snap-x snap-mandatory pb-4">
-          {products.slice(0, 8).map((product) => (
-            <div
-              key={product.id}
-              className="
-                flex-shrink-0
-                snap-start
-                w-[280px]
-              "
-            >
-              <ProductCard product={product} />
-            </div>
-          ))}
+        <h2
+          className="
+            text-xs font-bold
+            tracking-widest uppercase
+            text-neutral-500
+            mb-4
+          "
+        >
+          Trending Products
+        </h2>
+
+        {/* 
+          Horizontal scroll container.
+        */}
+        <div className="overflow-x-auto scrollbar-hide -mx-4">
+          <div className="flex flex-nowrap gap-4 snap-x snap-mandatory pb-4 px-4">
+            {products.slice(0, 8).map((product) => (
+              <div
+                key={product.id}
+                className="
+                  flex-shrink-0
+                  snap-start
+                  w-[260px]
+                "
+              >
+                <ProductCard product={product} />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 }
-
