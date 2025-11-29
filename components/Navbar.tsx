@@ -29,16 +29,14 @@ export default function Navbar() {
       "
     >
       {/* 
-        Inner container: Constrains content width and centers it.
-        - max-w-6xl for consistent page width
-        - mx-auto for horizontal centering
-        - px-4 for horizontal padding
+        Inner container: Edge-to-edge with generous padding.
+        - px-6 md:px-12 for edge positioning (like finds.org)
         - h-16 for consistent navbar height
         - flex with justify-between for logo left, links right
       */}
       <div
         className="
-          max-w-6xl mx-auto px-4
+          px-6 md:px-12 lg:px-16
           h-16
           flex items-center justify-between
         "

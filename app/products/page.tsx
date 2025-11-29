@@ -23,6 +23,7 @@ import CategoryFilter, {
   CategoryFilterValue,
 } from "@/components/CategoryFilter";
 import ProductGrid from "@/components/ProductGrid";
+import Footer from "@/components/Footer";
 
 /* Data imports */
 import { mockProducts } from "@/data/productsMock";
@@ -153,6 +154,11 @@ export default function ProductsPage() {
           )}
         </section>
       </main>
+
+      {/* 
+        Footer: Site description and copyright.
+      */}
+      <Footer />
     </>
   );
 }

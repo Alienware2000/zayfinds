@@ -30,6 +30,7 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import VerticalScrollSection from "@/components/VerticalScrollSection";
 import CategoryCarousel from "@/components/CategoryCarousel";
+import Footer from "@/components/Footer";
 
 /* Data imports */
 import { mockProducts } from "@/data/productsMock";
@@ -184,10 +185,15 @@ export default function LandingPage() {
             */}
             <p className="mt-6 text-sm text-neutral-600">
               17+ products across 11 categories
-            </p>
-          </div>
+          </p>
+        </div>
         </section>
       </main>
+
+      {/* 
+        Footer: Site description and copyright.
+      */}
+      <Footer />
     </>
   );
 }

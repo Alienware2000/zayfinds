@@ -66,9 +66,9 @@ export default function CategoryCarousel() {
     <section className="w-full py-8 md:py-16">
       {/* 
         Section header with title and "ALL PRODUCTS" button.
-        Constrained to max-w-6xl for readability.
+        Edge-to-edge positioning like finds.org.
       */}
-      <div className="max-w-6xl mx-auto px-4 flex items-center justify-between mb-8 md:mb-12">
+      <div className="px-6 md:px-12 lg:px-16 flex items-center justify-between mb-8 md:mb-12">
         <h2
           className="
             text-2xl md:text-3xl lg:text-4xl
