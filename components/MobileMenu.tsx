@@ -4,8 +4,10 @@
  * MobileMenu Component
  *
  * A fullscreen overlay menu for mobile navigation.
+ * Styled to match the dark, minimal zayfinds aesthetic.
+ * 
  * Features:
- * - Fullscreen overlay with accent color background
+ * - Fullscreen dark overlay matching site theme
  * - Large, bold navigation links with numbers
  * - Smooth open/close animations
  * - Closes when a link is clicked
@@ -65,28 +67,29 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
       className="
         fixed inset-0 z-[100]
         flex flex-col
-        bg-[#e63946]
+        bg-surface-base
         animate-menuFadeIn
       "
     >
-      {/* Header with MENU label and CLOSE button */}
+      {/* Header with logo and close button */}
       <div
         className="
           flex items-center justify-between
           px-6 py-5
+          border-b border-border-default
         "
       >
-        {/* MENU label */}
+        {/* Logo */}
         <span
           className="
             font-display
-            text-sm font-bold
-            tracking-[0.2em]
+            text-base font-bold
+            tracking-[0.15em]
             uppercase
-            text-black/70
+            text-text-primary
           "
         >
-          MENU
+          ZAYFINDS
         </span>
 
         {/* Close button */}
@@ -96,8 +99,8 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
             font-mono
             text-sm font-medium
             tracking-wider
-            text-black
-            hover:text-black/70
+            text-text-muted
+            hover:text-text-primary
             transition-colors duration-200
           "
         >
@@ -112,7 +115,7 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
           flex flex-col
           justify-center
           px-6 pb-20
-          gap-2
+          gap-4
         "
       >
         {NAV_ITEMS.map((item, index) => (
@@ -123,54 +126,55 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
             className="
               group
               flex items-baseline
-              gap-3
-              py-2
+              gap-4
+              py-3
+              border-b border-border-subtle
             "
             style={{
               animationDelay: `${index * 50}ms`,
             }}
           >
-            {/* Large link text */}
-            <span
-              className="
-                font-display
-                text-5xl sm:text-6xl md:text-7xl
-                font-black
-                uppercase
-                text-black
-                tracking-tight
-                leading-none
-                group-hover:text-white
-                transition-colors duration-200
-              "
-            >
-              {item.label}
-            </span>
-
             {/* Small number badge */}
             <span
               className="
                 font-mono
                 text-xs
                 font-medium
-                text-black/50
-                group-hover:text-white/70
+                text-text-subtle
+                group-hover:text-text-muted
+                transition-colors duration-200
+                w-8
+              "
+            >
+              {item.number}
+            </span>
+
+            {/* Large link text */}
+            <span
+              className="
+                font-display
+                text-4xl sm:text-5xl
+                font-bold
+                uppercase
+                text-text-primary
+                tracking-tight
+                leading-none
+                group-hover:text-text-secondary
                 transition-colors duration-200
               "
             >
-              [{item.number}]
+              {item.label}
             </span>
           </Link>
         ))}
       </nav>
 
-      {/* Footer text */}
-      <div className="px-6 pb-8">
-        <p className="text-black/40 text-xs font-mono tracking-wider">
-          ZAYFINDS — CURATED REP FINDS
+      {/* Footer */}
+      <div className="px-6 pb-8 border-t border-border-default pt-6">
+        <p className="text-text-subtle text-xs font-mono tracking-wider uppercase">
+          Curated rep finds — no gatekeeping
         </p>
       </div>
     </div>
   );
 }
-

@@ -91,23 +91,25 @@ export default function Navbar() {
 
           {/* 
             Mobile Menu Button: Visible only on mobile
-            - Opens fullscreen menu overlay
+            - Styled to match site's dark minimal aesthetic
           */}
           <button
             onClick={() => setIsMobileMenuOpen(true)}
             className="
               md:hidden
               flex items-center gap-2
-              px-3 py-2
+              px-4 py-2
               font-display
-              text-sm font-bold
-              tracking-wider
+              text-xs font-semibold
+              tracking-[0.1em]
               uppercase
               text-text-primary
-              bg-[#e63946]
+              bg-surface-elevated
+              border border-border-default
               rounded-md
-              hover:bg-[#d62839]
-              transition-colors duration-200
+              hover:bg-surface-raised
+              hover:border-border-strong
+              transition-all duration-200
             "
             aria-label="Open menu"
           >
