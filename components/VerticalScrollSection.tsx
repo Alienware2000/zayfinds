@@ -1,23 +1,21 @@
 /**
  * VerticalScrollSection Component
  *
- * A showcase section that displays products in animated vertical columns
- * on desktop, or a horizontal scroll row on mobile/tablet.
+ * A showcase section that displays products in animated columns.
  *
  * Desktop (≥lg/1024px):
  * - 3 vertical columns with animated scrolling
  * - Left column: scrolls up
  * - Center column: scrolls down
- * - Right column: scrolls up (slower for parallax effect)
+ * - Right column: scrolls up
  * - Fills parent height
  *
  * Mobile/Tablet (<lg):
- * - Single horizontal scrollable row
- * - No vertical animation
- * - Touch-friendly drag scrolling
+ * - Auto-scrolling horizontal carousel
+ * - Seamless infinite loop with duplicated content
+ * - Edge gradient fade effects
  *
- * Note: This component sits beside the sticky Hero section
- * on desktop (finds.org inspired).
+ * Note: This component sits beside the Hero section on desktop.
  */
 
 import { Product } from "@/lib/products";
@@ -138,38 +136,68 @@ export default function VerticalScrollSection({ products }: VerticalScrollSectio
 
       {/* ===========================================
           MOBILE/TABLET LAYOUT (below lg)
-          Single horizontal scrollable row with title
+          Auto-scrolling horizontal carousel
           =========================================== */}
       <div className="lg:hidden">
-        {/* 
-          Section title: Only shown on mobile.
-        */}
+        {/* Section title */}
         <h2
           className="
             text-xs font-bold
             tracking-widest uppercase
             text-neutral-500
-            mb-4
+            mb-4 px-4
           "
         >
           Trending Products
         </h2>
 
-        {/* 
-          Horizontal scroll container.
-        */}
-        <div className="overflow-x-auto scrollbar-hide -mx-4">
-          <div className="flex flex-nowrap gap-4 snap-x snap-mandatory pb-4 px-4">
+        {/* Auto-scrolling carousel container */}
+        <div className="relative w-full overflow-hidden">
+          {/* Left edge gradient */}
+          <div
+            className="
+              absolute left-0 top-0
+              w-16 h-full
+              bg-gradient-to-r from-surface-base to-transparent
+              z-10 pointer-events-none
+            "
+          />
+
+          {/* Right edge gradient */}
+          <div
+            className="
+              absolute right-0 top-0
+              w-16 h-full
+              bg-gradient-to-l from-surface-base to-transparent
+              z-10 pointer-events-none
+            "
+          />
+
+          {/* Auto-scrolling content - duplicated for seamless loop */}
+          <div
+            className="
+              flex gap-4
+              w-max
+              animate-scroll-horizontal
+            "
+          >
+            {/* First set of products */}
             {products.slice(0, 8).map((product) => (
               <div
-                key={product.id}
-                className="
-                  flex-shrink-0
-                  snap-start
-                  w-[260px]
-                "
+                key={`first-${product.id}`}
+                className="flex-shrink-0 w-[200px]"
               >
-                <ProductCard product={product} />
+                <ProductCard product={product} buttonVariant="buy-only" />
+              </div>
+            ))}
+
+            {/* Duplicated set for seamless loop */}
+            {products.slice(0, 8).map((product) => (
+              <div
+                key={`second-${product.id}`}
+                className="flex-shrink-0 w-[200px]"
+              >
+                <ProductCard product={product} buttonVariant="buy-only" />
               </div>
             ))}
           </div>
