@@ -17,8 +17,7 @@
  */
 
 import Link from "next/link";
-import { Product } from "@/types/product";
-import { getProductSlug } from "@/lib/products";
+import { Product, getProductSlug } from "@/lib/products";
 
 /**
  * Button variant determines which CTAs are shown on the card.
@@ -50,7 +49,7 @@ export default function ProductCard({
   badge,
   buttonVariant = "full",
 }: ProductCardProps) {
-  const displayPrice = product.priceRaw || "Price on site";
+  const displayPrice = product.priceText || "Price on site";
   const hasImage = product.imageUrl !== null && product.imageUrl !== "";
   const productSlug = getProductSlug(product);
 

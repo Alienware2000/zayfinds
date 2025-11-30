@@ -4,6 +4,7 @@
  * ProductsPage Component
  *
  * The full product browsing experience for zayfinds.
+ * Uses data from lib/products.ts as the single source of truth.
  *
  * Design v2.0:
  * - Layered grey surface colors
@@ -23,8 +24,12 @@ import CategoryFilter, {
 import ProductGrid from "@/components/ProductGrid";
 import Footer from "@/components/Footer";
 
-/* Data imports */
-import { mockProducts } from "@/data/productsMock";
+/* Data imports - single source of truth */
+import {
+  getAllProducts,
+  getProductsByCategory,
+  searchProducts,
+} from "@/lib/products";
 
 /**
  * Sort options for the product list.
@@ -36,7 +41,6 @@ type SortOption = "default" | "price-asc" | "price-desc";
  */
 function getCategoryLabel(value: CategoryFilterValue): string {
   if (value === "all") return "ALL";
-  if (value === "tops") return "T-SHIRTS";
   return value.toUpperCase();
 }
 
@@ -50,26 +54,32 @@ export default function ProductsPage() {
   const [sortBy, setSortBy] = useState<SortOption>("default");
   const [displayCount, setDisplayCount] = useState(20);
 
+  /**
+   * Process products based on filters and sorting.
+   * Uses centralized data helpers from lib/products.ts.
+   */
   const processedProducts = useMemo(() => {
-    let result = [...mockProducts];
+    // Start with base product list based on category and search
+    let result =
+      selectedCategory !== "all"
+        ? getProductsByCategory(selectedCategory)
+        : searchQuery.trim()
+          ? searchProducts(searchQuery)
+          : getAllProducts();
 
-    if (selectedCategory !== "all") {
-      result = result.filter(
-        (product) => product.category === selectedCategory
-      );
-    }
-
-    if (searchQuery.trim()) {
+    // If both category and search are active, filter further
+    if (selectedCategory !== "all" && searchQuery.trim()) {
       const query = searchQuery.toLowerCase().trim();
       result = result.filter((product) =>
         product.name.toLowerCase().includes(query)
       );
     }
 
+    // Apply sorting
     if (sortBy === "price-asc") {
-      result.sort((a, b) => (a.price ?? 0) - (b.price ?? 0));
+      result = [...result].sort((a, b) => (a.price ?? 0) - (b.price ?? 0));
     } else if (sortBy === "price-desc") {
-      result.sort((a, b) => (b.price ?? 0) - (a.price ?? 0));
+      result = [...result].sort((a, b) => (b.price ?? 0) - (a.price ?? 0));
     }
 
     return result;

@@ -4,6 +4,7 @@
  * CategoryFilter Component (Tab Bar)
  *
  * A full-width tab bar for selecting product categories.
+ * Categories are loaded dynamically from the products data.
  *
  * Design v2.0:
  * - Layered grey surface colors
@@ -12,12 +13,13 @@
  * - Refined typography
  */
 
-import { Category } from "@/types/product";
+import { getAllCategories } from "@/lib/products";
 
 /**
  * CategoryFilterValue represents the possible filter states.
+ * "all" means no category filter, string is a specific category name.
  */
-export type CategoryFilterValue = Category | "all";
+export type CategoryFilterValue = string | "all";
 
 /**
  * Props for the CategoryFilter component.
@@ -28,38 +30,29 @@ interface CategoryFilterProps {
 }
 
 /**
- * Tab configuration.
+ * Get all category tabs (ALL + dynamic categories from data).
  */
-interface TabConfig {
-  value: CategoryFilterValue;
-  label: string;
+function getCategoryTabs(): { value: CategoryFilterValue; label: string }[] {
+  const categories = getAllCategories();
+
+  return [
+    { value: "all", label: "ALL" },
+    ...categories.map((cat) => ({
+      value: cat,
+      label: cat.toUpperCase(),
+    })),
+  ];
 }
 
 /**
- * All available filter tabs.
- */
-const TABS: TabConfig[] = [
-  { value: "all", label: "ALL" },
-  { value: "shoes", label: "SHOES" },
-  { value: "tops", label: "T-SHIRTS" },
-  { value: "hoodies", label: "HOODIES" },
-  { value: "jackets", label: "JACKETS" },
-  { value: "pants", label: "PANTS" },
-  { value: "jewelry", label: "JEWELRY" },
-  { value: "bags", label: "BAGS" },
-  { value: "shorts", label: "SHORTS" },
-  { value: "accessories", label: "ACCESSORIES" },
-  { value: "electronics", label: "ELECTRONICS" },
-  { value: "misc", label: "MISC" },
-];
-
-/**
- * CategoryFilter renders a full-width tab bar.
+ * CategoryFilter renders a full-width tab bar with dynamic categories.
  */
 export default function CategoryFilter({
   value,
   onChange,
 }: CategoryFilterProps) {
+  const tabs = getCategoryTabs();
+
   return (
     <div
       id="categories"
@@ -72,7 +65,7 @@ export default function CategoryFilter({
       "
     >
       <div className="flex min-w-max">
-        {TABS.map((tab) => {
+        {tabs.map((tab) => {
           const isActive = value === tab.value;
 
           return (

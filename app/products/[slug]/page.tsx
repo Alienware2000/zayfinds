@@ -105,15 +105,19 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
                   Products
                 </Link>
               </li>
-              <li className="text-text-subtle">/</li>
-              <li>
-                <Link
-                  href={`/products?category=${product.category}`}
-                  className="hover:text-text-primary transition-colors"
-                >
-                  {titleCase(product.category)}
-                </Link>
-              </li>
+              {product.category && (
+                <>
+                  <li className="text-text-subtle">/</li>
+                  <li>
+                    <Link
+                      href={`/products?category=${encodeURIComponent(product.category)}`}
+                      className="hover:text-text-primary transition-colors"
+                    >
+                      {titleCase(product.category!)}
+                    </Link>
+                  </li>
+                </>
+              )}
               <li className="text-text-subtle">/</li>
               <li className="text-text-secondary truncate max-w-[200px]">
                 {product.name}
@@ -160,7 +164,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
                   Price
                 </span>
                 <span className="text-2xl md:text-3xl font-bold text-text-primary">
-                  {product.priceRaw || "Price on site"}
+                  {product.priceText || "Price on site"}
                 </span>
               </div>
 
@@ -220,12 +224,14 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
               {/* Metadata rows */}
               <div className="border-t border-border-default pt-6 space-y-4">
                 {/* Category row */}
-                <div className="flex items-center justify-between">
-                  <span className="text-meta text-text-muted">Category</span>
-                  <span className="text-sm text-text-primary">
-                    {titleCase(product.category)}
-                  </span>
-                </div>
+                {product.category && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-meta text-text-muted">Category</span>
+                    <span className="text-sm text-text-primary">
+                      {titleCase(product.category!)}
+                    </span>
+                  </div>
+                )}
 
                 {/* Price estimate row */}
                 {product.price !== null && (

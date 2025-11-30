@@ -11,7 +11,7 @@
  * - Empty state message when no products to display
  */
 
-import { Product } from "@/types/product";
+import { Product } from "@/lib/products";
 import ProductCard from "@/components/ProductCard";
 
 /**

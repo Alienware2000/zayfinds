@@ -3,7 +3,8 @@
 /**
  * CategoryCarousel Component
  *
- * A horizontal auto-scrolling carousel of category cards.
+ * A horizontal auto-scrolling carousel of category cards for the landing page.
+ * Uses dynamic categories from lib/products.ts.
  *
  * Design v2.0:
  * - Display font for section heading
@@ -13,39 +14,68 @@
  */
 
 import Link from "next/link";
-import { Category } from "@/types/product";
+import { getAllCategories } from "@/lib/products";
 
 /**
- * Category data with display labels and icons.
+ * Emoji icons for common category types.
+ * Falls back to 📦 for unknown categories.
  */
-interface CategoryItem {
-  value: Category;
-  label: string;
-  icon: string;
+const CATEGORY_ICONS: Record<string, string> = {
+  shoes: "👟",
+  jackets: "🧥",
+  hoodies: "🧥",
+  pants: "👖",
+  shorts: "🩳",
+  bags: "👜",
+  jewelry: "💎",
+  accessories: "🧢",
+  electronics: "🎧",
+  shirts: "👕",
+  hats: "🎩",
+  belts: "🔗",
+  socks: "🧦",
+  glasses: "🕶️",
+  wallets: "💼",
+  backpacks: "🎒",
+  travel: "✈️",
+  underwear: "🩲",
+  blanks: "⬜",
+  beanies: "🧢",
+  gloves: "🧤",
+  scarf: "🧣",
+};
+
+/**
+ * Get icon for a category (case-insensitive match).
+ */
+function getCategoryIcon(category: string): string {
+  const normalized = category.toLowerCase();
+  
+  // Check for exact match
+  if (CATEGORY_ICONS[normalized]) {
+    return CATEGORY_ICONS[normalized];
+  }
+  
+  // Check for partial match
+  for (const [key, icon] of Object.entries(CATEGORY_ICONS)) {
+    if (normalized.includes(key) || key.includes(normalized)) {
+      return icon;
+    }
+  }
+  
+  return "📦"; // Default icon
 }
 
 /**
- * List of categories to display.
- */
-const CATEGORIES: CategoryItem[] = [
-  { value: "shoes", label: "SHOES", icon: "👟" },
-  { value: "tops", label: "T-SHIRTS", icon: "👕" },
-  { value: "hoodies", label: "HOODIES", icon: "🧥" },
-  { value: "jewelry", label: "JEWELRY", icon: "💎" },
-  { value: "pants", label: "PANTS", icon: "👖" },
-  { value: "jackets", label: "JACKETS", icon: "🧥" },
-  { value: "bags", label: "BAGS", icon: "👜" },
-  { value: "shorts", label: "SHORTS", icon: "🩳" },
-  { value: "accessories", label: "ACCESSORIES", icon: "🧢" },
-  { value: "electronics", label: "ELECTRONICS", icon: "🎧" },
-  { value: "misc", label: "MISC", icon: "📦" },
-];
-
-/**
- * CategoryCarousel renders an auto-scrolling carousel.
+ * CategoryCarousel renders an auto-scrolling carousel with dynamic categories.
  */
 export default function CategoryCarousel() {
-  const duplicatedCategories = [...CATEGORIES, ...CATEGORIES];
+  // Get categories from the data source
+  const categories = getAllCategories();
+  
+  // Take first 12 categories for the carousel (duplicate for seamless loop)
+  const displayCategories = categories.slice(0, 12);
+  const duplicatedCategories = [...displayCategories, ...displayCategories];
 
   return (
     <section className="w-full py-8 md:py-16">
@@ -98,8 +128,8 @@ export default function CategoryCarousel() {
         >
           {duplicatedCategories.map((category, index) => (
             <Link
-              key={`${category.value}-${index}`}
-              href={`/products?category=${category.value}`}
+              key={`${category}-${index}`}
+              href={`/products?category=${encodeURIComponent(category)}`}
               className="
                 flex-shrink-0
                 w-[180px] md:w-[240px] lg:w-[280px]
@@ -125,7 +155,7 @@ export default function CategoryCarousel() {
                     text-text-primary
                   "
                 >
-                  {category.label}
+                  {category.toUpperCase()}
                 </span>
               </div>
 
@@ -139,7 +169,7 @@ export default function CategoryCarousel() {
                 "
               >
                 <span className="text-5xl md:text-6xl lg:text-7xl opacity-70">
-                  {category.icon}
+                  {getCategoryIcon(category)}
                 </span>
               </div>
             </Link>

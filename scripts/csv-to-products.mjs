@@ -4,7 +4,9 @@
  * Reads data/raw/Sheet1.csv (exported from Google Sheets) and converts
  * valid product rows into a JSON file at data/products.json.
  * 
- * Handles multi-line quoted fields (product names with newlines).
+ * Features:
+ * - Handles multi-line quoted fields (product names with newlines)
+ * - Extracts category from header rows and assigns to products
  * 
  * Usage: node scripts/csv-to-products.mjs
  */
@@ -104,6 +106,31 @@ function parsePrice(priceText) {
 }
 
 /**
+ * Checks if a row is a category header.
+ * Category headers have text in column A and empty columns B-E.
+ * Example: "Jackets,,,,"
+ * 
+ * @param {string[]} fields - Array of CSV fields
+ * @returns {boolean} - True if this is a category header row
+ */
+function isCategoryHeader(fields) {
+  const colA = fields[0] || '';
+  const colB = fields[1] || '';
+  const colC = fields[2] || '';
+  const colD = fields[3] || '';
+  const colE = fields[4] || '';
+
+  // Category header: has text in column A, all other columns empty
+  return (
+    colA.length > 0 &&
+    colB.length === 0 &&
+    colC.length === 0 &&
+    colD.length === 0 &&
+    colE.length === 0
+  );
+}
+
+/**
  * Checks if a row represents a valid product.
  * @param {string[]} fields - Array of CSV fields
  * @returns {boolean} - True if the row is a valid product
@@ -138,12 +165,23 @@ function cleanProductName(name) {
 }
 
 /**
+ * Cleans a category name by normalizing whitespace.
+ * 
+ * @param {string} category - Raw category name
+ * @returns {string} - Cleaned category name
+ */
+function cleanCategoryName(category) {
+  return category.replace(/[\r\n]+/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+/**
  * Transforms a CSV row into a product object.
  * @param {string[]} fields - Array of CSV fields
  * @param {number} id - Sequential product ID
+ * @param {string|null} category - Current category (from last category header)
  * @returns {object} - Product object
  */
-function transformToProduct(fields, id) {
+function transformToProduct(fields, id, category) {
   const name = cleanProductName(fields[1] || '');
   const priceText = fields[2] || '';
   const buyUrl = fields[4] || '';
@@ -151,8 +189,9 @@ function transformToProduct(fields, id) {
   return {
     id,
     name,
-    priceText,
     price: parsePrice(priceText),
+    priceText,
+    category,
     buyUrl,
     imageUrl: '/images/placeholder-item.png',
   };
@@ -181,13 +220,23 @@ function main() {
   // Skip header row (row 0)
   const dataRows = rows.slice(1);
 
-  // Parse and filter valid products
+  // Parse and filter valid products, tracking current category
   const products = [];
+  let currentCategory = null;
   let skippedCount = 0;
+  const categoriesFound = new Set();
 
   for (const fields of dataRows) {
+    // Check if this is a category header row
+    if (isCategoryHeader(fields)) {
+      currentCategory = cleanCategoryName(fields[0]);
+      categoriesFound.add(currentCategory);
+      continue; // Don't count as skipped, it's a category marker
+    }
+
+    // Check if this is a valid product row
     if (isValidProductRow(fields)) {
-      const product = transformToProduct(fields, products.length + 1);
+      const product = transformToProduct(fields, products.length + 1, currentCategory);
       products.push(product);
     } else {
       skippedCount++;
@@ -195,7 +244,9 @@ function main() {
   }
 
   console.log(`✅ Valid products found: ${products.length}`);
-  console.log(`⏭️  Skipped rows (headers/empty/invalid): ${skippedCount}`);
+  console.log(`📁 Categories found: ${categoriesFound.size}`);
+  console.log(`   Categories: ${[...categoriesFound].join(', ')}`);
+  console.log(`⏭️  Skipped rows (empty/invalid): ${skippedCount}`);
 
   // Write JSON output
   try {

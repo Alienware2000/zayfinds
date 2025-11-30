@@ -20,7 +20,7 @@
  * on desktop (finds.org inspired).
  */
 
-import { Product } from "@/types/product";
+import { Product } from "@/lib/products";
 import VerticalScrollColumn from "@/components/VerticalScrollColumn";
 import ProductCard from "@/components/ProductCard";
 

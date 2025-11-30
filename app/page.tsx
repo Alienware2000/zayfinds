@@ -2,6 +2,7 @@
  * LandingPage Component
  *
  * The marketing landing page for zayfinds.
+ * Uses data from lib/products.ts as the single source of truth.
  *
  * Design v2.0:
  * - Layered grey surfaces
@@ -21,14 +22,18 @@ import VerticalScrollSection from "@/components/VerticalScrollSection";
 import CategoryCarousel from "@/components/CategoryCarousel";
 import Footer from "@/components/Footer";
 
-/* Data imports */
-import { mockProducts } from "@/data/productsMock";
+/* Data imports - single source of truth */
+import { getAllProducts, getAllCategories, TOTAL_PRODUCT_COUNT } from "@/lib/products";
 
 /**
  * LandingPage is the entry point for zayfinds.
  */
 export default function LandingPage() {
-  const trendingProducts = mockProducts.slice(0, 12);
+  // Get first 12 products for the trending section
+  const trendingProducts = getAllProducts().slice(0, 12);
+  
+  // Get category count for the CTA section
+  const categoryCount = getAllCategories().length;
 
   return (
     <>
@@ -96,11 +101,11 @@ export default function LandingPage() {
               View all products
             </Link>
 
-            {/* Product count */}
+            {/* Product count - dynamic from data */}
             <p className="mt-8 text-sm text-text-subtle">
-              17+ products across 11 categories
-          </p>
-        </div>
+              {TOTAL_PRODUCT_COUNT.toLocaleString()}+ products across {categoryCount} categories
+            </p>
+          </div>
         </section>
       </main>
 

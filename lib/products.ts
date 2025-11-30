@@ -1,19 +1,48 @@
 /**
- * Product Helper Functions
+ * Product Data Layer
  *
- * Utility functions for working with products.
- * Provides slug generation, lookups, and related product queries.
+ * Single source of truth for all product data in the app.
+ * Imports from data/products.json and provides typed helper functions.
  *
- * These functions abstract data access so switching from mock data
- * to Google Sheets (or any other source) requires minimal changes.
- *
- * Routing patterns:
- * - Product detail: /products/[slug]
- * - Quality check: /quality/[slug]
+ * All product queries should go through this module:
+ * - getAllProducts()
+ * - getAllCategories()
+ * - getProductsByCategory()
+ * - searchProducts()
+ * - getProductBySlug()
+ * - getRelatedProducts()
  */
 
-import { Product } from "@/types/product";
-import { mockProducts } from "@/data/productsMock";
+import productsData from "@/data/products.json";
+
+/* ===========================================
+   TYPES
+   =========================================== */
+
+/**
+ * Product interface matching the JSON schema from products.json.
+ */
+export interface Product {
+  /** Unique sequential identifier */
+  id: number;
+  /** Product display name */
+  name: string;
+  /** Numeric price in USD for sorting/filtering, null if unparseable */
+  price: number | null;
+  /** Original price string for display (e.g., "90.00$") */
+  priceText: string;
+  /** Category name from CSV header, null for uncategorized products */
+  category: string | null;
+  /** External URL to the seller's product page */
+  buyUrl: string;
+  /** URL to the product image (placeholder for now) */
+  imageUrl: string;
+}
+
+/**
+ * Type the imported JSON data as an array of Products.
+ */
+const products: Product[] = productsData as Product[];
 
 /* ===========================================
    SLUG UTILITIES
@@ -25,7 +54,6 @@ import { mockProducts } from "@/data/productsMock";
  * Examples:
  * - "Vetements Silk Road Tee" → "vetements-silk-road-tee"
  * - "Yeezy 350 V2 (High Quality)" → "yeezy-350-v2-high-quality"
- * - "Ken Carson X Chain (Full)" → "ken-carson-x-chain-full"
  *
  * @param name - The product name to convert
  * @returns URL-safe lowercase slug
@@ -42,13 +70,13 @@ export function slugify(name: string): string {
 
 /**
  * Gets the slug for a product.
- * Uses the product's slug field if available, otherwise derives from name.
+ * Derives slug from the product name.
  *
  * @param product - The product to get slug for
  * @returns URL-safe slug string
  */
 export function getProductSlug(product: Product): string {
-  return product.slug || slugify(product.name);
+  return slugify(product.name);
 }
 
 /* ===========================================
@@ -56,87 +84,42 @@ export function getProductSlug(product: Product): string {
    =========================================== */
 
 /**
- * Returns all products from the data source.
- * Currently returns mock data; will be replaced with Sheets fetch later.
+ * Returns all products from data/products.json.
  *
  * @returns Array of all products
  */
 export function getAllProducts(): Product[] {
-  return mockProducts;
+  return products;
 }
 
 /**
- * Looks up a single product by its slug.
- * Checks both explicit slug field and derived slug from name.
+ * Returns a deduplicated list of all category names.
+ * Excludes null categories and sorts alphabetically.
  *
- * @param slug - The URL slug to search for
- * @returns The matching product, or undefined if not found
+ * @returns Array of unique category names
  */
-export function getProductBySlug(slug: string): Product | undefined {
-  const normalizedSlug = slug.toLowerCase();
+export function getAllCategories(): string[] {
+  const categorySet = new Set<string>();
 
-  return mockProducts.find((product) => {
-    // Check explicit slug field first
-    if (product.slug && product.slug.toLowerCase() === normalizedSlug) {
-      return true;
+  for (const product of products) {
+    if (product.category !== null) {
+      categorySet.add(product.category);
     }
-    // Fall back to derived slug from name
-    return slugify(product.name) === normalizedSlug;
-  });
-}
-
-/**
- * Looks up a single product by its ID.
- *
- * @param id - The product ID to search for
- * @returns The matching product, or undefined if not found
- */
-export function getProductById(id: string): Product | undefined {
-  return mockProducts.find((product) => product.id === id);
-}
-
-/**
- * Gets related products for a given product.
- * Returns products in the same category, excluding the current product.
- * Falls back to random products if category has few items.
- *
- * @param product - The product to find related items for
- * @param limit - Maximum number of related products to return (default: 4)
- * @returns Array of related products
- */
-export function getRelatedProducts(product: Product, limit: number = 4): Product[] {
-  // Get products in the same category (excluding current product)
-  const sameCategoryProducts = mockProducts.filter(
-    (p) => p.category === product.category && p.id !== product.id
-  );
-
-  // If we have enough same-category products, return those
-  if (sameCategoryProducts.length >= limit) {
-    return sameCategoryProducts.slice(0, limit);
   }
 
-  // Otherwise, fill remaining slots with other products
-  const otherProducts = mockProducts.filter(
-    (p) => p.category !== product.category && p.id !== product.id
+  return [...categorySet].sort((a, b) =>
+    a.toLowerCase().localeCompare(b.toLowerCase())
   );
-
-  // Combine same-category products with random others
-  const combined = [
-    ...sameCategoryProducts,
-    ...otherProducts.slice(0, limit - sameCategoryProducts.length),
-  ];
-
-  return combined.slice(0, limit);
 }
 
 /**
- * Gets products by category.
+ * Gets products filtered by category.
  *
- * @param category - The category to filter by
+ * @param category - The category name to filter by
  * @returns Array of products in that category
  */
 export function getProductsByCategory(category: string): Product[] {
-  return mockProducts.filter((product) => product.category === category);
+  return products.filter((product) => product.category === category);
 }
 
 /**
@@ -147,11 +130,71 @@ export function getProductsByCategory(category: string): Product[] {
  */
 export function searchProducts(query: string): Product[] {
   const normalizedQuery = query.toLowerCase().trim();
-  if (!normalizedQuery) return mockProducts;
+  if (!normalizedQuery) return products;
 
-  return mockProducts.filter((product) =>
+  return products.filter((product) =>
     product.name.toLowerCase().includes(normalizedQuery)
   );
+}
+
+/**
+ * Looks up a single product by its slug.
+ * Matches against derived slug from product name.
+ *
+ * @param slug - The URL slug to search for
+ * @returns The matching product, or undefined if not found
+ */
+export function getProductBySlug(slug: string): Product | undefined {
+  const normalizedSlug = slug.toLowerCase();
+
+  return products.find((product) => slugify(product.name) === normalizedSlug);
+}
+
+/**
+ * Looks up a single product by its ID.
+ *
+ * @param id - The product ID to search for
+ * @returns The matching product, or undefined if not found
+ */
+export function getProductById(id: number): Product | undefined {
+  return products.find((product) => product.id === id);
+}
+
+/**
+ * Gets related products for a given product.
+ * Returns products in the same category, excluding the current product.
+ * Falls back to other products if category has few items.
+ *
+ * @param product - The product to find related items for
+ * @param limit - Maximum number of related products to return (default: 4)
+ * @returns Array of related products
+ */
+export function getRelatedProducts(
+  product: Product,
+  limit: number = 4
+): Product[] {
+  // Get products in the same category (excluding current product)
+  const sameCategoryProducts = products.filter(
+    (p) => p.category === product.category && p.id !== product.id
+  );
+
+  // If we have enough same-category products, return those
+  if (sameCategoryProducts.length >= limit) {
+    return sameCategoryProducts.slice(0, limit);
+  }
+
+  // Otherwise, fill remaining slots with other products
+  const otherProducts = products.filter(
+    (p) => p.category !== product.category && p.id !== product.id
+  );
+
+  // Combine same-category products with others
+  const combined = [
+    ...sameCategoryProducts,
+    ...otherProducts.slice(0, limit - sameCategoryProducts.length),
+  ];
+
+  return combined.slice(0, limit);
 }
 
 /* ===========================================
@@ -161,5 +204,4 @@ export function searchProducts(query: string): Product[] {
 /**
  * Total number of products in the data source.
  */
-export const TOTAL_PRODUCT_COUNT = mockProducts.length;
-
+export const TOTAL_PRODUCT_COUNT = products.length;

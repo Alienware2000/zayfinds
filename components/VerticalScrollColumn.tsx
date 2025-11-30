@@ -18,7 +18,7 @@
  * 4. The duplicate ensures there's always content visible during transition
  */
 
-import { Product } from "@/types/product";
+import { Product } from "@/lib/products";
 import ProductCard from "@/components/ProductCard";
 
 /**

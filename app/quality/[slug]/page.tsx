@@ -118,7 +118,7 @@ export default async function QualityCheckPage({ params }: QualityPageProps) {
               </span>
               <div className="flex-1 h-px bg-white/10" />
               <span className="text-[10px] font-mono text-neutral-600">
-                QC-{product.id.replace("prod_", "")}
+                QC-{product.id}
               </span>
             </div>
 
@@ -138,12 +138,16 @@ export default async function QualityCheckPage({ params }: QualityPageProps) {
 
             {/* Category + Price row */}
             <div className="flex items-center gap-4 text-sm">
-              <span className="text-neutral-500">
-                {titleCase(product.category)}
-              </span>
-              <span className="text-neutral-700">•</span>
+              {product.category && (
+                <>
+                  <span className="text-neutral-500">
+                    {titleCase(product.category!)}
+                  </span>
+                  <span className="text-neutral-700">•</span>
+                </>
+              )}
               <span className="text-white font-medium">
-                {product.priceRaw || "Price on site"}
+                {product.priceText || "Price on site"}
               </span>
             </div>
           </header>
@@ -416,10 +420,10 @@ export default async function QualityCheckPage({ params }: QualityPageProps) {
               <div className="border border-white/10 rounded-lg overflow-hidden">
                 {[
                   { label: "Product ID", value: product.id },
-                  { label: "Category", value: titleCase(product.category) },
+                  { label: "Category", value: product.category ? titleCase(product.category) : "Uncategorized" },
                   {
                     label: "Price",
-                    value: product.priceRaw || "Price on site",
+                    value: product.priceText || "Price on site",
                   },
                   {
                     label: "Estimated USD",
