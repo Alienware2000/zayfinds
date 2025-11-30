@@ -2,7 +2,7 @@
  * Product Data Layer
  *
  * Single source of truth for all product data in the app.
- * Imports from data/products.json and provides typed helper functions.
+ * Imports from data/products.json and applies image overrides.
  *
  * All product queries should go through this module:
  * - getAllProducts()
@@ -14,6 +14,7 @@
  */
 
 import productsData from "@/data/products.json";
+import imageOverrides from "@/data/image-overrides.json";
 
 /* ===========================================
    TYPES
@@ -35,14 +36,39 @@ export interface Product {
   category: string | null;
   /** External URL to the seller's product page */
   buyUrl: string;
-  /** URL to the product image (placeholder for now) */
-  imageUrl: string;
+  /** URL to the product image */
+  imageUrl: string | null;
 }
 
 /**
- * Type the imported JSON data as an array of Products.
+ * Image overrides type - maps product ID to image URL.
  */
-const products: Product[] = productsData as Product[];
+type ImageOverrides = Record<string, string | null>;
+
+/**
+ * Apply image overrides to products.
+ * If an override exists for a product ID and is not null, use it.
+ */
+function applyImageOverrides(
+  rawProducts: Product[],
+  overrides: ImageOverrides
+): Product[] {
+  return rawProducts.map((product) => {
+    const overrideUrl = overrides[String(product.id)];
+    if (overrideUrl) {
+      return { ...product, imageUrl: overrideUrl };
+    }
+    return product;
+  });
+}
+
+/**
+ * Load and process products with image overrides applied.
+ */
+const products: Product[] = applyImageOverrides(
+  productsData as Product[],
+  imageOverrides as ImageOverrides
+);
 
 /* ===========================================
    SLUG UTILITIES

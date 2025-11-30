@@ -1,0 +1,26 @@
+{
+  "_comment": "Add image URLs for products by ID. These override the placeholder in products.json",
+  "_instructions": "1. Open the buyUrl in browser, 2. Right-click main image → Copy image address, 3. Paste here",
+  
+  "1": "https://si.geilicdn.com/open1817828565-1817828565-106b0000019a57b65a450a23b4de_750_1000.jpg",
+  "2": "https://si.geilicdn.com/open1817828565-1817828565-098c0000019a57b7135f0a8133b0_3000_3000.jpg",
+  "3": "https://si.geilicdn.com/open1624782517-1624782517-49ea00000199243d57110a8133b0_3000_4000.jpg",
+  "4": "https://si.geilicdn.com/open1624782517-1624782517-49ea00000199243d57110a8133b0_3000_4000.jpg",
+  "5": "https://si.geilicdn.com/open1624782517-1624782517-764e000001995313fb550a23b491_750_1000.jpg",
+  "6": "https://si.geilicdn.com/open1624782517-1624782517-0d60000001989ddcb2cb0a23b4de_3589_4786.jpg",
+  "7": "https://si.geilicdn.com/pcitem901965113164-101f00000197a50ddadf0a2395a3_800_800.jpg",
+  "8": "https://si.geilicdn.com/pcitem901965113164-101f00000197a50ddadf0a2395a3_800_800.jpg",
+  "9": "https://si.geilicdn.com/pcitem901965113164-101f00000197a50ddadf0a2395a3_800_800.jpg",
+  "10": "https://si.geilicdn.com/pcitem901965113164-7450000001979648f38a0a2395e5_3000_3000.jpg",
+  "11": "https://si.geilicdn.com/pcitem901965113164-79a80000019795b443940a231316_3024_4032.jpg",
+  "12": "https://si.geilicdn.com/pcitem901965113164-79a80000019795b443940a231316_3024_4032.jpg",
+  "13": "https://si.geilicdn.com/pcitem901965113164-7ec200000197a51ae8c30a230115_1600_1600.jpg",
+  "14": "https://si.geilicdn.com/pcitem901965113164-6458000001979704faff0a2396f4_1600_1600.jpg",
+  "15": "https://si.geilicdn.com/pcitem901965113164-6597000001979705e3010a20e284_1600_1600.jpg",
+  "16": "https://si.geilicdn.com/pcitem901965113164-6458000001979704faff0a2396f4_1600_1600.jpg",
+  "17": "https://si.geilicdn.com/pcitem901965113164-6a28000001979a744c1b0a23041a_800_800.jpg",
+  "18": "https://si.geilicdn.com/pcitem901965113164-22fe00000197a58255710a2304aa_800_800.jpg",
+  "19": "https://si.geilicdn.com/pcitem901965113164-009100000197966ffa5b0a2395e5_2400_2400.jpg",
+  "20": "https://si.geilicdn.com/pcitem901965113164-2af900000197966a02e50a23057e_2400_2400.jpg"
+}
+
