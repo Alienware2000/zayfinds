@@ -40,7 +40,7 @@ export default function LandingPage() {
             =========================================== */}
         <section className="w-full max-w-7xl mx-auto px-4">
           {/* Desktop layout */}
-          <div className="hidden lg:flex min-h-[600px] py-12 gap-8">
+          <div className="hidden lg:flex min-h-[600px] py-12 gap-8 relative z-[1]">
             <div className="w-[40%] flex flex-col justify-center">
               <Hero />
             </div>
@@ -50,7 +50,7 @@ export default function LandingPage() {
           </div>
 
           {/* Mobile layout */}
-          <div className="lg:hidden py-12">
+          <div className="lg:hidden py-12 relative z-[1]">
             <Hero />
             <div className="mt-8">
               <VerticalScrollSection products={trendingProducts} />
@@ -78,10 +78,10 @@ export default function LandingPage() {
             =========================================== */}
         <section className="max-w-6xl mx-auto px-4 pb-24">
           {/* Section divider */}
-          <div className="section-divider mb-12" />
+          <div className="section-divider mb-12 relative z-[1]" />
 
           {/* CTA content with subtle background */}
-          <div className="py-16 text-center section-gradient rounded-2xl">
+          <div className="py-16 text-center section-gradient rounded-2xl relative z-[1]">
             {/* Heading in display font */}
             <h2 className="heading-section mb-4">
               Ready to explore?

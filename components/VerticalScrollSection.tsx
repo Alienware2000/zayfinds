@@ -116,7 +116,7 @@ export default function VerticalScrollSection({ products }: VerticalScrollSectio
           />
 
           {/* 
-            Center column: Scrolls downward.
+            Center column: Scrolls downward at normal speed.
           */}
           <VerticalScrollColumn
             products={centerProducts}
@@ -125,12 +125,13 @@ export default function VerticalScrollSection({ products }: VerticalScrollSectio
           />
 
           {/* 
-            Right column: Scrolls upward at slower speed.
+            Right column: Scrolls upward at same speed as left.
+            Both left and right columns stay aligned.
           */}
           <VerticalScrollColumn
             products={rightProducts}
             direction="up"
-            speed="slow"
+            speed="normal"
           />
         </div>
       </div>
