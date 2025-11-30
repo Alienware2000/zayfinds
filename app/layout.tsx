@@ -45,9 +45,73 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+/**
+ * Site Metadata
+ *
+ * Includes Open Graph and Twitter Card tags for rich link previews
+ * on social media platforms (Twitter, Facebook, Discord, LinkedIn, etc.)
+ */
 export const metadata: Metadata = {
-  title: "ZAYFINDS",
-  description: "Curated rep fashion finds — no gatekeeping",
+  // Base URL for resolving relative image paths
+  metadataBase: new URL("https://zayfinds.com"),
+
+  // Basic metadata
+  title: {
+    default: "ZAYFINDS",
+    template: "%s | ZAYFINDS",
+  },
+  description:
+    "Curated rep fashion finds — no gatekeeping. Browse hand-picked pieces and tap through to buy directly from trusted sellers.",
+  keywords: [
+    "rep fashion",
+    "replica",
+    "fashion finds",
+    "curated",
+    "streetwear",
+    "designer",
+    "affordable fashion",
+  ],
+  authors: [{ name: "ZAYFINDS" }],
+  creator: "ZAYFINDS",
+
+  // Open Graph metadata (Facebook, LinkedIn, Discord, etc.)
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://zayfinds.com",
+    siteName: "ZAYFINDS",
+    title: "ZAYFINDS — Curated Rep Fashion Finds",
+    description:
+      "We do not gatekeep over here. Browse hand-picked rep fashion pieces and tap through to buy directly from trusted sellers.",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "ZAYFINDS — Curated Rep Fashion Finds",
+      },
+    ],
+  },
+
+  // Twitter Card metadata
+  twitter: {
+    card: "summary_large_image",
+    title: "ZAYFINDS — Curated Rep Fashion Finds",
+    description:
+      "We do not gatekeep over here. Browse hand-picked rep fashion pieces and tap through to buy directly from trusted sellers.",
+    images: ["/og-image.png"],
+    creator: "@zayfinds",
+  },
+
+  // Additional metadata
+  robots: {
+    index: true,
+    follow: true,
+  },
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({
