@@ -14,12 +14,12 @@
  */
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import CategoriesDropdown from "./CategoriesDropdown";
+import { useEffect } from "react";
 
 interface MobileMenuProps {
   isOpen: boolean;
   onClose: () => void;
+  onOpenCategories: () => void;
 }
 
 /**
@@ -30,15 +30,7 @@ const NAV_ITEMS = [
   { href: "/products", label: "Products", number: "02" },
 ];
 
-export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
-  const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
-
-  // Close mobile menu when categories dropdown opens (Option A)
-  useEffect(() => {
-    if (isCategoriesOpen) {
-      onClose();
-    }
-  }, [isCategoriesOpen, onClose]);
+export default function MobileMenu({ isOpen, onClose, onOpenCategories }: MobileMenuProps) {
   /**
    * Prevent body scroll when menu is open
    */
@@ -178,7 +170,7 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
 
         {/* Categories button */}
         <button
-          onClick={() => setIsCategoriesOpen(true)}
+          onClick={onOpenCategories}
           className="
             group
             flex items-baseline
@@ -224,13 +216,6 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
           </span>
         </button>
       </nav>
-
-      {/* Categories Dropdown (full-screen overlay) */}
-      <CategoriesDropdown
-        isOpen={isCategoriesOpen}
-        onClose={() => setIsCategoriesOpen(false)}
-        variant="mobile"
-      />
 
       {/* Footer */}
       <div className="px-6 pb-8 border-t border-border-default pt-6">

@@ -25,6 +25,7 @@ import CategoriesDropdown from "./CategoriesDropdown";
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
+  const [isMobileCategoriesOpen, setIsMobileCategoriesOpen] = useState(false);
 
   return (
     <>
@@ -135,6 +136,17 @@ export default function Navbar() {
       <MobileMenu
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
+        onOpenCategories={() => {
+          setIsMobileMenuOpen(false); // Close mobile menu
+          setIsMobileCategoriesOpen(true); // Open categories
+        }}
+      />
+
+      {/* Mobile Categories Dropdown - rendered at Navbar level to avoid unmounting */}
+      <CategoriesDropdown
+        isOpen={isMobileCategoriesOpen}
+        onClose={() => setIsMobileCategoriesOpen(false)}
+        variant="mobile"
       />
     </>
   );

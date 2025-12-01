@@ -110,7 +110,7 @@ export default function CategoriesDropdown({
             <Link
               key={category}
               href={`/products?category=${encodeURIComponent(category)}`}
-              onClick={() => handleCategoryClick(category)}
+              onClick={onClose}
               className="
                 block
                 px-4 py-3
@@ -136,7 +136,7 @@ export default function CategoriesDropdown({
   return (
     <div
       className="
-        fixed inset-0 z-[100]
+        fixed inset-0 z-[110]
         flex flex-col
         bg-surface-base
         animate-slideDown
