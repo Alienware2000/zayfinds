@@ -31,6 +31,7 @@ const CATEGORY_ICONS: Record<string, string> = {
   accessories: "🧢",
   electronics: "🎧",
   shirts: "👕",
+  tops: "👕",
   hats: "🎩",
   belts: "🔗",
   socks: "🧦",

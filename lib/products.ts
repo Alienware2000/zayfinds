@@ -115,7 +115,7 @@ export function getProductSlug(product: Product): string {
  * Must match the categories defined in scripts/csv-to-products.mjs
  */
 export const NEW_CATEGORIES = [
-  'Shirts',
+  'Tops',
   'Shorts',
   'Pants',
   'Shoes',

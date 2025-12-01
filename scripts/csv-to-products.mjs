@@ -34,7 +34,7 @@ const UNCATEGORIZED_OUTPUT_PATH = join(PROJECT_ROOT, 'data', 'uncategorized-prod
  * This is the single source of truth for all category operations.
  */
 const NEW_CATEGORIES = [
-  'Shirts',
+  'Tops',
   'Shorts',
   'Pants',
   'Shoes',
@@ -56,7 +56,7 @@ function mapOldCategoryToNew(oldCategory) {
 
   const normalized = oldCategory.trim().toLowerCase();
 
-  // Shirts
+  // Tops
   if (
     normalized.includes('shirt') ||
     normalized.includes('polo') ||
@@ -66,7 +66,7 @@ function mapOldCategoryToNew(oldCategory) {
     normalized.includes('knit') ||
     normalized === 'tops'
   ) {
-    return 'Shirts';
+    return 'Tops';
   }
 
   // Shorts
@@ -223,7 +223,7 @@ function inferCategoryFromName(productName) {
     return 'Pants';
   }
 
-  // Shirts
+  // Tops
   if (
     hasWord('shirt') ||
     hasWord('tee') ||
@@ -237,7 +237,7 @@ function inferCategoryFromName(productName) {
     hasWord('zip-up') ||
     hasWord('zipup')
   ) {
-    return 'Shirts';
+    return 'Tops';
   }
 
   // Shorts
