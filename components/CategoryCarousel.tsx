@@ -86,50 +86,87 @@ export default function CategoryCarousel() {
     const container = scrollContainerRef.current;
     if (!container) return;
 
-    let isScrolling = false;
+    // Use refs for reliable state tracking (not closures)
+    const isAdjustingRef = { current: false };
+    let rafId: number | null = null;
+    let lastScrollLeft = 0;
 
     // Initialize scroll position to the middle (start of duplicated content)
     const initializeScroll = () => {
       if (container.scrollWidth > 0) {
-        container.scrollLeft = container.scrollWidth / 2;
+        const halfWidth = container.scrollWidth / 2;
+        container.scrollLeft = halfWidth;
+        lastScrollLeft = halfWidth;
       } else {
-        // Retry if scrollWidth is not ready yet
         requestAnimationFrame(initializeScroll);
       }
     };
 
-    requestAnimationFrame(initializeScroll);
+    // Wait for next frame to ensure DOM is ready
+    requestAnimationFrame(() => {
+      requestAnimationFrame(initializeScroll);
+    });
 
     const handleScroll = () => {
-      // Prevent infinite loops from our own scroll adjustments
-      if (isScrolling) return;
+      // Skip if we're currently adjusting (prevents infinite loops)
+      if (isAdjustingRef.current) return;
 
-      const scrollWidth = container.scrollWidth;
-      const clientWidth = container.clientWidth;
-      const scrollLeft = container.scrollLeft;
-      const halfWidth = scrollWidth / 2;
+      // Throttle scroll handler with requestAnimationFrame
+      if (rafId !== null) return;
       
-      // Threshold for edge detection (small buffer to prevent flickering)
-      const threshold = 100;
-      
-      // If scrolled past the end (right side), wrap to beginning
-      if (scrollLeft >= halfWidth - clientWidth + threshold) {
-        isScrolling = true;
-        container.scrollLeft = scrollLeft - halfWidth;
-        // Reset flag after a brief moment
-        setTimeout(() => { isScrolling = false; }, 50);
-      }
-      // If scrolled past the beginning (left side), wrap to end
-      else if (scrollLeft <= threshold) {
-        isScrolling = true;
-        container.scrollLeft = scrollLeft + halfWidth;
-        // Reset flag after a brief moment
-        setTimeout(() => { isScrolling = false; }, 50);
-      }
+      rafId = requestAnimationFrame(() => {
+        rafId = null;
+        
+        const scrollWidth = container.scrollWidth;
+        const scrollLeft = container.scrollLeft;
+        const clientWidth = container.clientWidth;
+        const halfWidth = scrollWidth / 2;
+        
+        // Calculate a safe wrap distance (approximately one card width + gap)
+        // This ensures we wrap before the user sees the edge
+        const wrapDistance = 300; // Approximate card width + gap
+        
+        // Detect scroll direction
+        const scrollingRight = scrollLeft > lastScrollLeft;
+        const scrollingLeft = scrollLeft < lastScrollLeft;
+        lastScrollLeft = scrollLeft;
+        
+        // Wrap when approaching the right boundary (scrolling right)
+        // Wrap BEFORE reaching halfWidth so it's invisible
+        if (scrollingRight && scrollLeft >= halfWidth - wrapDistance) {
+          isAdjustingRef.current = true;
+          // Jump back by half width (seamless because content is duplicated)
+          const newScrollLeft = scrollLeft - halfWidth;
+          container.scrollLeft = newScrollLeft;
+          lastScrollLeft = newScrollLeft;
+          // Reset flag after browser processes the scroll change
+          requestAnimationFrame(() => {
+            isAdjustingRef.current = false;
+          });
+        }
+        // Wrap when approaching the left boundary (scrolling left)
+        // Wrap BEFORE reaching 0 so it's invisible
+        else if (scrollingLeft && scrollLeft <= wrapDistance) {
+          isAdjustingRef.current = true;
+          // Jump forward by half width
+          const newScrollLeft = scrollLeft + halfWidth;
+          container.scrollLeft = newScrollLeft;
+          lastScrollLeft = newScrollLeft;
+          requestAnimationFrame(() => {
+            isAdjustingRef.current = false;
+          });
+        }
+      });
     };
 
     container.addEventListener('scroll', handleScroll, { passive: true });
-    return () => container.removeEventListener('scroll', handleScroll);
+    
+    return () => {
+      container.removeEventListener('scroll', handleScroll);
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+      }
+    };
   }, []);
 
   return (
