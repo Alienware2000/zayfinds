@@ -14,7 +14,8 @@
  */
 
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import CategoriesDropdown from "./CategoriesDropdown";
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -27,10 +28,17 @@ interface MobileMenuProps {
 const NAV_ITEMS = [
   { href: "/", label: "Home", number: "01" },
   { href: "/products", label: "Products", number: "02" },
-  { href: "/products#categories", label: "Categories", number: "03" },
 ];
 
 export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
+  const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
+
+  // Close mobile menu when categories dropdown opens (Option A)
+  useEffect(() => {
+    if (isCategoriesOpen) {
+      onClose();
+    }
+  }, [isCategoriesOpen, onClose]);
   /**
    * Prevent body scroll when menu is open
    */
@@ -167,7 +175,62 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
             </span>
           </Link>
         ))}
+
+        {/* Categories button */}
+        <button
+          onClick={() => setIsCategoriesOpen(true)}
+          className="
+            group
+            flex items-baseline
+            gap-4
+            py-3
+            border-b border-border-subtle
+            text-left
+          "
+          style={{
+            animationDelay: `${NAV_ITEMS.length * 50}ms`,
+          }}
+        >
+          {/* Small number badge */}
+          <span
+            className="
+              font-mono
+              text-xs
+              font-medium
+              text-text-subtle
+              group-hover:text-text-muted
+              transition-colors duration-200
+              w-8
+            "
+          >
+            03
+          </span>
+
+          {/* Large link text */}
+          <span
+            className="
+              font-display
+              text-4xl sm:text-5xl
+              font-bold
+              uppercase
+              text-text-primary
+              tracking-tight
+              leading-none
+              group-hover:text-text-secondary
+              transition-colors duration-200
+            "
+          >
+            Categories
+          </span>
+        </button>
       </nav>
+
+      {/* Categories Dropdown (full-screen overlay) */}
+      <CategoriesDropdown
+        isOpen={isCategoriesOpen}
+        onClose={() => setIsCategoriesOpen(false)}
+        variant="mobile"
+      />
 
       {/* Footer */}
       <div className="px-6 pb-8 border-t border-border-default pt-6">

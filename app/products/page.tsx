@@ -14,9 +14,11 @@
  * Route: /products
  */
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 
 /* Component imports */
+import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import CategoryFilter, {
   CategoryFilterValue,
@@ -45,14 +47,30 @@ function getCategoryLabel(value: CategoryFilterValue): string {
 }
 
 /**
- * ProductsPage is the main browsing interface.
+ * ProductsPageContent - Inner component that uses useSearchParams
+ * Must be wrapped in Suspense boundary
  */
-export default function ProductsPage() {
+function ProductsPageContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  
+  // Read category from URL query parameter on initial load
+  const initialCategory = searchParams.get("category") || "all";
+  
   const [selectedCategory, setSelectedCategory] =
-    useState<CategoryFilterValue>("all");
+    useState<CategoryFilterValue>(initialCategory);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortOption>("default");
   const [displayCount, setDisplayCount] = useState(20);
+  
+  // Sync category with URL when URL changes (e.g., browser back/forward)
+  useEffect(() => {
+    const categoryFromUrl = searchParams.get("category") || "all";
+    if (categoryFromUrl !== selectedCategory) {
+      setSelectedCategory(categoryFromUrl);
+      setDisplayCount(20); // Reset display count when category changes from URL
+    }
+  }, [searchParams, selectedCategory]);
 
   /**
    * Process products based on filters and sorting.
@@ -100,17 +118,21 @@ export default function ProductsPage() {
         {/* Breadcrumb */}
         <div className="px-6 md:px-12 lg:px-16 py-4">
           <nav className="text-meta text-text-muted">
-            <span className="hover:text-text-primary cursor-pointer transition-colors">
+            <Link href="/" className="hover:text-text-primary transition-colors">
               HOME
-            </span>
+            </Link>
             <span className="mx-2 text-text-subtle">•</span>
-            <span className="hover:text-text-primary cursor-pointer transition-colors">
+            <Link href="/products" className="hover:text-text-primary transition-colors">
               PRODUCTS
-            </span>
-            <span className="mx-2 text-text-subtle">•</span>
-            <span className="text-text-primary">
-              {getCategoryLabel(selectedCategory)}
-            </span>
+            </Link>
+            {selectedCategory !== "all" && (
+              <>
+                <span className="mx-2 text-text-subtle">•</span>
+                <span className="text-text-primary">
+                  {getCategoryLabel(selectedCategory)}
+                </span>
+              </>
+            )}
           </nav>
         </div>
 
@@ -119,7 +141,16 @@ export default function ProductsPage() {
           value={selectedCategory}
           onChange={(val) => {
             setSelectedCategory(val);
-            setDisplayCount(20);
+            setDisplayCount(20); // Reset display count on category change
+            
+            // Update URL with category parameter
+            const params = new URLSearchParams(searchParams.toString());
+            if (val === "all") {
+              params.delete("category");
+            } else {
+              params.set("category", val);
+            }
+            router.push(`/products?${params.toString()}`);
           }}
         />
 
@@ -220,5 +251,29 @@ export default function ProductsPage() {
 
       <Footer />
     </>
+  );
+}
+
+/**
+ * ProductsPage - Wrapper with Suspense boundary
+ * Required for useSearchParams in Next.js App Router
+ */
+export default function ProductsPage() {
+  return (
+    <Suspense
+      fallback={
+        <>
+          <Navbar />
+          <main className="min-h-screen bg-surface-base">
+            <div className="px-6 md:px-12 lg:px-16 py-8">
+              <p className="text-text-muted">Loading...</p>
+            </div>
+          </main>
+          <Footer />
+        </>
+      }
+    >
+      <ProductsPageContent />
+    </Suspense>
   );
 }

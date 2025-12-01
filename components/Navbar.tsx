@@ -16,6 +16,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import MobileMenu from "./MobileMenu";
+import CategoriesDropdown from "./CategoriesDropdown";
 
 /**
  * Navbar is now a client component to manage mobile menu state.
@@ -23,6 +24,7 @@ import MobileMenu from "./MobileMenu";
  */
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
 
   return (
     <>
@@ -84,9 +86,20 @@ export default function Navbar() {
               Products
             </Link>
 
-            <Link href="/products#categories" className="nav-link">
-              Categories
-            </Link>
+            {/* Categories dropdown trigger */}
+            <div className="relative">
+              <button
+                onClick={() => setIsCategoriesOpen(!isCategoriesOpen)}
+                className="nav-link"
+              >
+                Categories
+              </button>
+              <CategoriesDropdown
+                isOpen={isCategoriesOpen}
+                onClose={() => setIsCategoriesOpen(false)}
+                variant="desktop"
+              />
+            </div>
           </div>
 
           {/* 
