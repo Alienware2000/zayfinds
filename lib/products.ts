@@ -158,7 +158,8 @@ export function getAllCategories(): string[] {
  */
 export function getProductsByCategory(category: string): Product[] {
   // Only filter if category is in the valid list
-  if (!NEW_CATEGORIES.includes(category as any)) {
+  const validCategories = [...NEW_CATEGORIES] as readonly string[];
+  if (!validCategories.includes(category)) {
     return [];
   }
   

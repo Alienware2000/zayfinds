@@ -119,7 +119,6 @@ export default function CategoryCarousel() {
         
         const scrollWidth = container.scrollWidth;
         const scrollLeft = container.scrollLeft;
-        const clientWidth = container.clientWidth;
         const halfWidth = scrollWidth / 2;
         
         // Calculate a safe wrap distance (approximately one card width + gap)

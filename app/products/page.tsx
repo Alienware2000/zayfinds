@@ -15,7 +15,7 @@
  */
 
 import { useState, useMemo, useEffect, Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 /* Component imports */
 import Link from "next/link";
@@ -51,7 +51,6 @@ function getCategoryLabel(value: CategoryFilterValue): string {
  * Must be wrapped in Suspense boundary
  */
 function ProductsPageContent() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   
   // Read category from URL query parameter on initial load
