@@ -137,8 +137,13 @@ export default function Navbar() {
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
         onOpenCategories={() => {
-          setIsMobileMenuOpen(false); // Close mobile menu
-          setIsMobileCategoriesOpen(true); // Open categories
+          // Open categories immediately (higher z-index will show on top)
+          // Close mobile menu after a brief delay to allow smooth transition
+          setIsMobileCategoriesOpen(true);
+          // Don't close immediately - let CategoriesDropdown appear first
+          setTimeout(() => {
+            setIsMobileMenuOpen(false);
+          }, 150); // Delay to prevent flash
         }}
       />
 
