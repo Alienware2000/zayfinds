@@ -106,6 +106,27 @@ export function getProductSlug(product: Product): string {
 }
 
 /* ===========================================
+   CATEGORY CONSTANTS
+   =========================================== */
+
+/**
+ * The 8 new categories for zayfinds.
+ * This is the single source of truth for all category operations.
+ * Must match the categories defined in scripts/csv-to-products.mjs
+ */
+export const NEW_CATEGORIES = [
+  'Shirts',
+  'Shorts',
+  'Pants',
+  'Shoes',
+  'Outerwear',
+  'Accessories',
+  'Room decor',
+  'Electronics',
+  'Vehicle Modifications',
+] as const;
+
+/* ===========================================
    DATA ACCESS FUNCTIONS
    =========================================== */
 
@@ -119,32 +140,28 @@ export function getAllProducts(): Product[] {
 }
 
 /**
- * Returns a deduplicated list of all category names.
- * Excludes null categories and sorts alphabetically.
+ * Returns the list of all valid categories.
+ * Uses the NEW_CATEGORIES constant as the single source of truth.
  *
- * @returns Array of unique category names
+ * @returns Array of category names (the 8 new categories)
  */
 export function getAllCategories(): string[] {
-  const categorySet = new Set<string>();
-
-  for (const product of products) {
-    if (product.category !== null) {
-      categorySet.add(product.category);
-    }
-  }
-
-  return [...categorySet].sort((a, b) =>
-    a.toLowerCase().localeCompare(b.toLowerCase())
-  );
+  return [...NEW_CATEGORIES];
 }
 
 /**
  * Gets products filtered by category.
+ * Only accepts categories from NEW_CATEGORIES.
  *
- * @param category - The category name to filter by
+ * @param category - The category name to filter by (must be one of NEW_CATEGORIES)
  * @returns Array of products in that category
  */
 export function getProductsByCategory(category: string): Product[] {
+  // Only filter if category is in the valid list
+  if (!NEW_CATEGORIES.includes(category as any)) {
+    return [];
+  }
+  
   return products.filter((product) => product.category === category);
 }
 
