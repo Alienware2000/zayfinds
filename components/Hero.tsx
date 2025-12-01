@@ -29,7 +29,7 @@ export default function Hero() {
         - Muted grey for visual hierarchy
       */}
       <span className="text-meta text-text-muted">
-        Curated finds for everyone
+        Affordable finds for everyone
       </span>
 
       {/* 
@@ -57,7 +57,7 @@ export default function Hero() {
           leading-relaxed
         "
       >
-        Browse hand picked pieces from trusted brands and sellers.
+        If you're broke don't worry, we've all been there.
       </p>
 
       {/* 
