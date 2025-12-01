@@ -80,7 +80,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://zayfinds.com",
     siteName: "ZAYFINDS",
-    title: "ZAYFINDS — Curated Rep Fashion Finds",
+    title: "ZAYFINDS — Curated Finds for Everyone",
     description:
       "We do not gatekeep over here. Browse hand-picked rep fashion pieces and tap through to buy directly from trusted sellers.",
     images: [
@@ -88,7 +88,7 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "ZAYFINDS — Curated Rep Fashion Finds",
+        alt: "ZAYFINDS — Curated Finds for Everyone",
       },
     ],
   },
@@ -96,7 +96,7 @@ export const metadata: Metadata = {
   // Twitter Card metadata
   twitter: {
     card: "summary_large_image",
-    title: "ZAYFINDS — Curated Rep Fashion Finds",
+    title: "ZAYFINDS — Curated Finds for Everyone",
     description:
       "We do not gatekeep over here. Browse hand-picked rep fashion pieces and tap through to buy directly from trusted sellers.",
     images: ["/og-image.png"],
