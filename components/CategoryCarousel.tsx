@@ -86,25 +86,49 @@ export default function CategoryCarousel() {
     const container = scrollContainerRef.current;
     if (!container) return;
 
-    // Initialize scroll position to the middle (start of duplicated content)
-    container.scrollLeft = container.scrollWidth / 2;
+    let isScrolling = false;
 
-    const handleScroll = () => {
-      const scrollWidth = container.scrollWidth;
-      const clientWidth = container.clientWidth;
-      const scrollLeft = container.scrollLeft;
-      
-      // If scrolled to the end (or very close), reset to beginning
-      if (scrollLeft >= scrollWidth / 2 - clientWidth) {
-        container.scrollLeft = scrollLeft - scrollWidth / 2;
-      }
-      // If scrolled to the beginning (or very close), jump to middle
-      else if (scrollLeft <= 0) {
-        container.scrollLeft = scrollWidth / 2;
+    // Initialize scroll position to the middle (start of duplicated content)
+    const initializeScroll = () => {
+      if (container.scrollWidth > 0) {
+        container.scrollLeft = container.scrollWidth / 2;
+      } else {
+        // Retry if scrollWidth is not ready yet
+        requestAnimationFrame(initializeScroll);
       }
     };
 
-    container.addEventListener('scroll', handleScroll);
+    requestAnimationFrame(initializeScroll);
+
+    const handleScroll = () => {
+      // Prevent infinite loops from our own scroll adjustments
+      if (isScrolling) return;
+
+      const scrollWidth = container.scrollWidth;
+      const clientWidth = container.clientWidth;
+      const scrollLeft = container.scrollLeft;
+      const halfWidth = scrollWidth / 2;
+      
+      // Threshold for edge detection (small buffer to prevent flickering)
+      const threshold = 100;
+      
+      // If scrolled past the end (right side), wrap to beginning
+      if (scrollLeft >= halfWidth - clientWidth + threshold) {
+        isScrolling = true;
+        container.scrollLeft = scrollLeft - halfWidth;
+        // Reset flag after a brief moment
+        setTimeout(() => { isScrolling = false; }, 50);
+      }
+      // If scrolled past the beginning (left side), wrap to end
+      else if (scrollLeft <= threshold) {
+        isScrolling = true;
+        container.scrollLeft = scrollLeft + halfWidth;
+        // Reset flag after a brief moment
+        setTimeout(() => { isScrolling = false; }, 50);
+      }
+    };
+
+    container.addEventListener('scroll', handleScroll, { passive: true });
     return () => container.removeEventListener('scroll', handleScroll);
   }, []);
 
