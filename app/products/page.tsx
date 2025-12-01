@@ -143,14 +143,16 @@ function ProductsPageContent() {
             setSelectedCategory(val);
             setDisplayCount(20); // Reset display count on category change
             
-            // Update URL with category parameter
+            // Update URL directly using browser history API to avoid navigation flash
             const params = new URLSearchParams(searchParams.toString());
             if (val === "all") {
               params.delete("category");
             } else {
               params.set("category", val);
             }
-            router.push(`/products?${params.toString()}`);
+            
+            const newUrl = `/products?${params.toString()}`;
+            window.history.replaceState(null, "", newUrl);
           }}
         />
 
