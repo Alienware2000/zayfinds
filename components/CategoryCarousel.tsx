@@ -15,6 +15,7 @@
 
 import Link from "next/link";
 import { getAllCategories } from "@/lib/products";
+import { useRef, useEffect } from "react";
 
 /**
  * Emoji icons for common category types.
@@ -71,12 +72,41 @@ function getCategoryIcon(category: string): string {
  * CategoryCarousel renders an auto-scrolling carousel with dynamic categories.
  */
 export default function CategoryCarousel() {
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  
   // Get categories from the data source
   const categories = getAllCategories();
   
   // Take first 12 categories for the carousel (duplicate for seamless loop)
   const displayCategories = categories.slice(0, 12);
   const duplicatedCategories = [...displayCategories, ...displayCategories];
+
+  // Handle seamless scroll wrapping
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    // Initialize scroll position to the middle (start of duplicated content)
+    container.scrollLeft = container.scrollWidth / 2;
+
+    const handleScroll = () => {
+      const scrollWidth = container.scrollWidth;
+      const clientWidth = container.clientWidth;
+      const scrollLeft = container.scrollLeft;
+      
+      // If scrolled to the end (or very close), reset to beginning
+      if (scrollLeft >= scrollWidth / 2 - clientWidth) {
+        container.scrollLeft = scrollLeft - scrollWidth / 2;
+      }
+      // If scrolled to the beginning (or very close), jump to middle
+      else if (scrollLeft <= 0) {
+        container.scrollLeft = scrollWidth / 2;
+      }
+    };
+
+    container.addEventListener('scroll', handleScroll);
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <section className="w-full py-8 md:py-16">
@@ -93,10 +123,14 @@ export default function CategoryCarousel() {
       </div>
 
       {/* Full-width carousel container */}
-      <div className="relative w-full overflow-hidden group">
-        {/* Left edge gradient */}
+      <div 
+        ref={scrollContainerRef}
+        className="relative w-full overflow-x-auto overflow-y-hidden group scrollbar-hide"
+      >
+        {/* Left edge gradient - hidden on mobile */}
         <div
           className="
+            hidden md:block
             absolute left-0 top-0
             w-20 md:w-32 lg:w-40
             h-full
@@ -106,9 +140,10 @@ export default function CategoryCarousel() {
           "
         />
 
-        {/* Right edge gradient */}
+        {/* Right edge gradient - hidden on mobile */}
         <div
           className="
+            hidden md:block
             absolute right-0 top-0
             w-20 md:w-32 lg:w-40
             h-full

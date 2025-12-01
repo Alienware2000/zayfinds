@@ -18,9 +18,12 @@
  * Note: This component sits beside the Hero section on desktop.
  */
 
+"use client";
+
 import { Product } from "@/lib/products";
 import VerticalScrollColumn from "@/components/VerticalScrollColumn";
 import ProductCard from "@/components/ProductCard";
+import { useRef, useEffect } from "react";
 
 /**
  * Props for the VerticalScrollSection component.
@@ -47,6 +50,8 @@ function chunkArray<T>(array: T[], chunkSize: number): T[][] {
  * Shows animated vertical columns on desktop, horizontal scroll on mobile.
  */
 export default function VerticalScrollSection({ products }: VerticalScrollSectionProps) {
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  
   /* 
     Calculate products per column.
     We want roughly equal distribution across 3 columns.
@@ -64,6 +69,33 @@ export default function VerticalScrollSection({ products }: VerticalScrollSectio
   const leftProducts = columnProducts[0] || [];
   const centerProducts = columnProducts[1] || columnProducts[0] || [];
   const rightProducts = columnProducts[2] || columnProducts[0] || [];
+
+  // Handle seamless scroll wrapping for mobile carousel
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    // Initialize scroll position to the middle (start of duplicated content)
+    container.scrollLeft = container.scrollWidth / 2;
+
+    const handleScroll = () => {
+      const scrollWidth = container.scrollWidth;
+      const clientWidth = container.clientWidth;
+      const scrollLeft = container.scrollLeft;
+      
+      // If scrolled to the end (or very close), reset to beginning
+      if (scrollLeft >= scrollWidth / 2 - clientWidth) {
+        container.scrollLeft = scrollLeft - scrollWidth / 2;
+      }
+      // If scrolled to the beginning (or very close), jump to middle
+      else if (scrollLeft <= 0) {
+        container.scrollLeft = scrollWidth / 2;
+      }
+    };
+
+    container.addEventListener('scroll', handleScroll);
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <div className="w-full h-full">
@@ -151,27 +183,11 @@ export default function VerticalScrollSection({ products }: VerticalScrollSectio
           Trending Products
         </h2>
 
-        {/* Auto-scrolling carousel container */}
-        <div className="relative w-full overflow-hidden">
-          {/* Left edge gradient */}
-          <div
-            className="
-              absolute left-0 top-0
-              w-16 h-full
-              bg-gradient-to-r from-surface-base to-transparent
-              z-10 pointer-events-none
-            "
-          />
-
-          {/* Right edge gradient */}
-          <div
-            className="
-              absolute right-0 top-0
-              w-16 h-full
-              bg-gradient-to-l from-surface-base to-transparent
-              z-10 pointer-events-none
-            "
-          />
+        {/* Auto-scrolling carousel container - now scrollable */}
+        <div 
+          ref={scrollContainerRef}
+          className="relative w-full overflow-x-auto overflow-y-hidden scrollbar-hide"
+        >
 
           {/* Auto-scrolling content - duplicated for seamless loop */}
           <div
